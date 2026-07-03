@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Propostas — Desconto Sollar</title>
+  <meta name="description" content="Ferramenta administrativa para geração e impressão de propostas personalizadas de economia solar.">
+  
+  <!-- Fontes Oficiais -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. VARIÁVEIS DE DESIGN & ESTILOS GERAIS (SIDEBAR & WORKSPACE)
+       ========================================================================== */
+    :root {
+      /* Cores oficiais da marca */
+      --azul: #258887;
+      --azul-esc: #1b6261;
+      --azul-claro: #e9f3f3;
+      --azul-mid: #D85C03; /* Laranja Oficial */
+      --azul-mid-esc: #aa4902;
+      --cinza-bg: #F5F7FA;
+      --cinza-borda: #DDE3EC;
+      --texto: #1E293B;
+      --texto-sub: #64748B;
+      --branco: #FFFFFF;
+
+      /* Cores do painel administrativo (Tema Escuro/Slate) */
+      --adm-bg: #0f172a;
+      --adm-sidebar: #1e293b;
+      --adm-border: rgba(255, 255, 255, 0.08);
+      --adm-input-bg: rgba(15, 23, 42, 0.6);
+      --adm-text: #f8fafc;
+      --adm-text-sub: #94a3b8;
+      
+      /* Zoom padrão do preview */
+      --preview-zoom: 1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--azul) var(--adm-input-bg);
+    }
+
+    /* Scrollbars customizadas */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--adm-input-bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--azul);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--azul-esc);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--adm-bg);
+      color: var(--adm-text);
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      overflow: hidden;
+    }
+
+    /* ==========================================================================
+       2. LAYOUT DO PAINEL LATERAL (CONTROLES)
+       ========================================================================== */
+    .sidebar {
+      background: var(--adm-sidebar);
+      border-right: 1px solid var(--adm-border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 10;
+      box-shadow: 4px 0 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-header {
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .sidebar-header h1 {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--adm-text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-header h1 span {
+      color: var(--azul-mid);
+    }
+
+    .sidebar-header p {
+      font-size: 0.78rem;
+      color: var(--adm-text-sub);
+      margin-top: 4px;
+    }
+
+    /* Formulários e Inputs */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--adm-text-sub);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--adm-input-bg);
+      border: 1.5px solid var(--adm-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--adm-text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--azul);
+      box-shadow: 0 0 0 3px rgba(37, 136, 135, 0.2);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    select.form-control option {
+      background: var(--adm-sidebar);
+      color: var(--adm-text);
+    }
+
+    /* Alternadores e Botões de Estado */
+    .btn-group-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--adm-input-bg);
+      border: 1.5px solid var(--adm-border);
+      border-radius: 8px;
+      padding: 3px;
+      margin-bottom: 4px;
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      color: var(--adm-text-sub);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .toggle-btn.active {
+      background: var(--azul);
+      color: var(--branco);
+      box-shadow: 0 2px 8px rgba(37, 136, 135, 0.3);
+    }
+
+    /* Seletor de Fase de Rede */
+    .phase-selector-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: var(--adm-input-bg);
+      border: 1.5px solid var(--adm-border);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+    }
+
+    .phase-btn {
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      color: var(--adm-text-sub);
+      padding: 8px 4px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .phase-btn span {
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .phase-btn small {
+      font-size: 0.6rem;
+      opacity: 0.8;
+      margin-top: 1px;
+    }
+
+    .phase-btn.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--azul);
+      border: 1px solid rgba(37, 136, 135, 0.4);
+    }
+
+    .phase-btn.active.mono { color: #f59e0b; }
+    .phase-btn.active.bi { color: #10b981; }
+    .phase-btn.active.tri { color: #3b82f6; }
+
+    /* Painel de ações do formulário */
+    .actions-panel {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--adm-border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: var(--azul-mid);
+      color: var(--branco);
+    }
+
+    .btn-primary:hover {
+      background: var(--azul-mid-esc);
+      box-shadow: 0 4px 15px rgba(216, 92, 3, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid var(--adm-border);
+      color: var(--adm-text);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ==========================================================================
+       3. ÁREA DE TRABALHO & VISUALIZAÇÃO DO A4
+       ========================================================================== */
+    .workspace {
+      background: #0b0f19;
+      height: 100vh;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+    }
+
+    /* Barra de ferramentas flutuante do workspace (Zoom) */
+    .workspace-toolbar {
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      background: rgba(30, 41, 59, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--adm-border);
+      border-radius: 20px;
+      padding: 4px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .zoom-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--adm-text-sub);
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .zoom-btn {
+      background: transparent;
+      border: none;
+      color: var(--adm-text);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .zoom-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Container de escala do A4 */
+    .preview-scale-wrapper {
+      transform: scale(var(--preview-zoom));
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
+      margin-bottom: 40px;
+    }
+
+    /* ==========================================================================
+       4. ESTILIZAÇÃO DO DOCUMENTO A4 (IDÊNTICO AO PDF DO CHATBOT)
+       ========================================================================== */
+    .proposal-paper {
+      width: 210mm;
+      height: 297mm;
+      background: var(--branco);
+      color: var(--texto);
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    /* Cabeçalho do A4 */
+    .proposal-header {
+      background: var(--branco);
+      padding: 16px 36px 12px;
+      border-bottom: 3px solid var(--azul-claro);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .logo-text {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--azul);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      color: var(--azul-mid);
+    }
+
+    .logo-sub {
+      font-size: 0.72rem;
+      color: var(--azul-esc);
+      font-weight: 500;
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+    }
+
+    .header-badge {
+      background: var(--azul-claro);
+      border: 1.5px solid var(--azul);
+      border-radius: 10px;
+      padding: 10px 18px;
+      text-align: right;
+    }
+
+    .header-badge .label {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      color: var(--azul-esc);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-badge .date {
+      font-size: 0.82rem;
+      color: var(--texto-sub);
+      margin-top: 3px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* Hero da Proposta */
+    .proposal-hero {
+      background: linear-gradient(135deg, var(--azul) 0%, var(--azul-esc) 100%);
+      padding: 20px 36px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .proposal-hero::before {
+      content: '';
+      position: absolute;
+      right: -60px; top: -60px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .proposal-hero::after {
+      content: '';
+      position: absolute;
+      right: 40px; bottom: -80px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .hero-left {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--branco);
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .proposal-hero h1 {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--branco);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .hero-desc {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 1.6;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .hero-right {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 16px 20px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .cliente-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .cliente-nome {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--branco);
+      margin-bottom: 12px;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .cliente-end {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.55;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* Seção Sobre / Quem Somos */
+    .proposal-about {
+      padding: 14px 36px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      border-bottom: 1px solid var(--cinza-borda);
+      flex-shrink: 0;
+    }
+
+    .about-col p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--texto-sub);
+      line-height: 1.7;
+    }
+
+    .about-col p strong {
+      color: var(--texto);
+      font-weight: 600;
+    }
+
+    /* Seção de Detalhes da Proposta */
+    .proposal-details {
+      padding: 0 36px 12px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-header {
+      background: linear-gradient(90deg, var(--azul) 0%, var(--azul-esc) 100%);
+      margin: 0 -36px 16px;
+      padding: 10px 36px;
+    }
+
+    .section-header h2 {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--branco);
+      letter-spacing: 0.3px;
+    }
+
+    /* Tabela da Proposta */
+    .proposal-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid var(--cinza-borda);
+      margin-bottom: 14px;
+    }
+
+    .proposal-table thead tr {
+      background: var(--azul);
+    }
+
+    .proposal-table thead th {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--branco);
+      padding: 10px 18px;
+      text-align: left;
+      letter-spacing: 0.3px;
+    }
+
+    .proposal-table thead th:last-child {
+      text-align: right;
+    }
+
+    .proposal-table tbody tr {
+      border-bottom: 1px solid var(--cinza-borda);
+    }
+
+    .proposal-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .proposal-table tbody tr:nth-child(even) {
+      background: var(--cinza-bg);
+    }
+
+    .proposal-table tbody tr:nth-child(odd) {
+      background: var(--branco);
+    }
+
+    .proposal-table tbody tr.destaque {
+      background: var(--azul-claro) !important;
+    }
+
+    .proposal-table tbody td {
+      padding: 10px 18px;
+      font-size: 0.88rem;
+      color: var(--texto);
+      vertical-align: middle;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .proposal-table tbody td:first-child {
+      font-weight: 500;
+    }
+
+    .proposal-table tbody td:last-child {
+      text-align: right;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--azul);
+    }
+
+    .proposal-table tbody tr.destaque td:last-child {
+      color: var(--azul-esc);
+    }
+
+    /* Cards de Economia */
+    .economy-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .econ-card {
+      border-radius: 10px;
+      padding: 14px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .econ-card.mensal {
+      background: linear-gradient(135deg, var(--azul) 0%, var(--azul-mid) 100%);
+    }
+
+    .econ-card.anual {
+      background: linear-gradient(135deg, var(--azul-esc) 0%, #0A2647 100%);
+    }
+
+    .econ-card::before {
+      content: '';
+      position: absolute;
+      right: -20px; bottom: -20px;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .econ-card .card-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .econ-card .card-value {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--branco);
+      line-height: 1;
+    }
+
+    .econ-card .card-sub {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 6px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* Próximos Passos */
+    .proposal-steps {
+      padding: 0 36px 12px;
+      flex-shrink: 0;
+    }
+
+    .proposal-steps .section-header {
+      background: linear-gradient(90deg, var(--azul-mid) 0%, var(--azul) 100%);
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      min-width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--azul);
+      color: var(--branco);
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .step-text {
+      flex: 1;
+    }
+
+    .step-text strong {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--texto);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .step-text span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.83rem;
+      color: var(--texto-sub);
+      line-height: 1.55;
+    }
+
+    /* Rodapé da Proposta */
+    .proposal-footer {
+      background: var(--azul-esc);
+      padding: 10px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      flex-shrink: 0;
+    }
+
+    .footer-logo {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--branco);
+    }
+
+    .footer-logo span {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .footer-info {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.55);
+      text-align: right;
+      line-height: 1.4;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ==========================================================================
+       5. ESTILOS DE IMPRESSÃO (@MEDIA PRINT)
+       ========================================================================== */
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      
+      body {
+        background: var(--branco);
+        color: var(--texto);
+        display: block;
+        overflow: visible;
+        height: auto;
+        min-height: auto;
+      }
+
+      .sidebar,
+      .workspace-toolbar,
+      .actions-panel,
+      .workspace-zoom-indicator {
+        display: none !important;
+      }
+
+      .workspace {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        display: block !important;
+        overflow: visible !important;
+        height: auto !important;
+      }
+
+      .preview-scale-wrapper {
+        transform: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        display: block !important;
+      }
+
+      .proposal-paper {
+        width: 210mm !important;
+        height: 297mm !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        border: none !important;
+        page-break-after: avoid;
+        page-break-before: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    /* ==========================================================================
+       6. ESTILOS RESPONSIVOS PARA TELAS MENORES (WEB-BASED SIDEBAR)
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      body {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      
+      .sidebar {
+        height: auto;
+        overflow-y: visible;
+        box-shadow: none;
+      }
+      
+      .workspace {
+        height: auto;
+        padding: 20px 10px;
+        overflow: visible;
+      }
+
+      .preview-scale-wrapper {
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
+      .workspace-toolbar {
+        position: fixed;
+        bottom: 16px;
+        top: auto;
+        right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. PAINEL DE CONTROLE LATERAL -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h1>Sollar <span>Simulador</span></h1>
+      <p>Gerador oficial de Propostas Comerciais</p>
+    </div>
+
+    <!-- Seção de Dados do Cliente -->
+    <div class="form-group">
+      <label for="input-nome">Nome do Cliente</label>
+      <input type="text" id="input-nome" class="form-control" value="Xand" placeholder="Ex: Alexandre Silva">
+    </div>
+
+    <div class="form-group">
+      <label for="input-cidade">Cidade / Estado</label>
+      <input type="text" id="input-cidade" class="form-control" value="Minas Gerais" placeholder="Ex: Belo Horizonte / MG">
+    </div>
+
+    <div class="form-group">
+      <label for="input-celular">WhatsApp / Celular</label>
+      <input type="text" id="input-celular" class="form-control" value="(32) 9920-0286" placeholder="Ex: (31) 98888-8888">
+    </div>
+
+    <div class="form-group">
+      <label for="input-data">Data de Emissão</label>
+      <input type="date" id="input-data" class="form-control">
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--adm-border); margin: 15px 0;">
+
+    <!-- Seletor de Grupo Tarifário (BT vs MT) -->
+    <div class="form-group">
+      <label>Grupo Tarifário</label>
+      <div class="btn-group-toggle">
+        <button type="button" class="toggle-btn active" data-grupo="bt" id="btn-grupo-bt">Baixa Tensão (BT)</button>
+        <button type="button" class="toggle-btn" data-grupo="mt" id="btn-grupo-mt">Média Tensão (MT)</button>
+      </div>
+    </div>
+
+    <!-- PAINEL DE INPUTS DA BAIXA TENSÃO (BT) -->
+    <div id="container-grupo-bt">
+      <div class="form-group">
+        <label>Modo de Simulação</label>
+        <div class="btn-group-toggle">
+          <button type="button" class="toggle-btn active" data-modo="kwh" id="btn-modo-kwh">Por Consumo (kWh)</button>
+          <button type="button" class="toggle-btn" data-modo="reais" id="btn-modo-reais">Por Fatura (R$)</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="label-input-valor" for="input-valor">Consumo Médio (kWh)</label>
+        <input type="number" id="input-valor" class="form-control" value="192" placeholder="Ex: 192">
+      </div>
+
+      <div class="form-group">
+        <label for="input-tarifa">Tarifa da Concessionária (R$/kWh)</label>
+        <input type="text" id="input-tarifa" class="form-control" value="1,14" placeholder="Ex: 1,14">
+      </div>
+
+      <div class="form-group" id="fase-selector-container" style="display: block;">
+        <label>Fase de Conexão (Dedução Ativa)</label>
+        <div class="phase-selector-group">
+          <button type="button" class="phase-btn mono" data-conexao="mono">
+            <span>Monofásico</span>
+            <small>30 kWh</small>
+          </button>
+          <button type="button" class="phase-btn bi" data-conexao="bi">
+            <span>Bifásico</span>
+            <small>50 kWh</small>
+          </button>
+          <button type="button" class="phase-btn tri active" data-conexao="tri">
+            <span>Trifásico</span>
+            <small>100 kWh</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="input-desconto-bt">Percentual de Desconto (%)</label>
+        <input type="number" id="input-desconto-bt" class="form-control" value="25" placeholder="Ex: 25">
+      </div>
+    </div>
+
+    <!-- PAINEL DE INPUTS DA MÉDIA TENSÃO (MT) -->
+    <div id="container-grupo-mt" style="display: none;">
+      <div class="form-group">
+        <label for="input-consumo-hp">Consumo Ponta - HP (kWh)</label>
+        <input type="number" id="input-consumo-hp" class="form-control" value="1000" placeholder="Ex: 1000">
+      </div>
+      
+      <div class="form-group">
+        <label for="input-tarifa-hp">Tarifa Ponta - HP (R$/kWh)</label>
+        <input type="text" id="input-tarifa-hp" class="form-control" value="2,10" placeholder="Ex: 2,10">
+      </div>
+
+      <div class="form-group">
+        <label for="input-consumo-hfp">Consumo Fora Ponta - HFP (kWh)</label>
+        <input type="number" id="input-consumo-hfp" class="form-control" value="5000" placeholder="Ex: 5000">
+      </div>
+
+      <div class="form-group">
+        <label for="input-tarifa-hfp">Tarifa Fora Ponta - HFP (R$/kWh)</label>
+        <input type="text" id="input-tarifa-hfp" class="form-control" value="0,72" placeholder="Ex: 0,72">
+      </div>
+
+      <div class="form-group">
+        <label for="input-desconto-mt">Percentual de Desconto (%)</label>
+        <input type="number" id="input-desconto-mt" class="form-control" value="15" placeholder="Ex: 15">
+      </div>
+    </div>
+
+    <!-- Fidelidade Contratual (Último item editável) -->
+    <div class="form-group">
+      <label for="input-fidelidade">Fidelidade Contratual</label>
+      <select id="input-fidelidade" class="form-control">
+        <option value="sem">Sem fidelidade</option>
+        <option value="12">Fidelidade de 12 meses</option>
+        <option value="24">Fidelidade de 24 meses</option>
+        <option value="36">Fidelidade de 36 meses</option>
+      </select>
+    </div>
+
+    <!-- Painel de Ações Administrativas -->
+    <div class="actions-panel">
+      <button type="button" class="btn btn-primary" id="btn-print">
+        <!-- Ícone Impressora SVG -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Salvar PDF / Imprimir
+      </button>
+      
+      <button type="button" class="btn btn-secondary" id="btn-share">
+        <!-- Ícone Compartilhar SVG -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Copiar Link Preenchido
+      </button>
+
+      <button type="button" class="btn btn-secondary" id="btn-whatsapp">
+        <!-- Ícone WhatsApp SVG -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.968C16.528 2.008 14.068.996 11.45.996c-5.447 0-9.875 4.37-9.879 9.8.002 2.012.528 3.982 1.523 5.736l-.991 3.616 3.73-.974zm12.013-6.937c-.328-.164-1.94-.959-2.241-1.07-.301-.109-.52-.164-.738.164-.219.329-.848 1.07-1.039 1.29-.19.219-.382.246-.71.082-.328-.164-1.386-.511-2.64-1.63-1.037-.926-1.737-2.072-1.941-2.4-.204-.329-.022-.507.142-.671.147-.148.328-.383.493-.574.164-.19.219-.328.328-.548.109-.219.055-.411-.028-.575-.082-.164-.738-1.78-.973-2.347-.216-.52-.464-.447-.638-.456-.164-.008-.356-.01-.548-.01-.191 0-.507.071-.772.356-.266.287-1.012.986-1.012 2.402 0 1.417 1.029 2.787 1.173 2.979.144.192 2.027 3.132 4.909 4.372.685.295 1.22.471 1.637.603.689.219 1.316.188 1.812.114.553-.083 1.94-.793 2.213-1.56.274-.768.274-1.426.192-1.56-.083-.134-.301-.219-.629-.383z"/></svg>
+        Mensagem WhatsApp
+      </button>
+
+      <button type="button" class="btn btn-secondary" style="font-size: 0.78rem; padding: 8px;" id="btn-clear">
+        Limpar Campos
+      </button>
+    </div>
+  </aside>
+
+  <!-- 2. ÁREA DE VISUALIZAÇÃO A4 -->
+  <main class="workspace">
+    <!-- Controle de Zoom do Workspace -->
+    <div class="workspace-toolbar">
+      <button class="zoom-btn" id="zoom-out" title="Reduzir Visualização">−</button>
+      <span class="zoom-text" id="zoom-indicator">100%</span>
+      <button class="zoom-btn" id="zoom-in" title="Aumentar Visualização">+</button>
+      <button class="zoom-btn" id="zoom-reset" title="Ajustar Visualização" style="font-size: 0.72rem; font-weight: bold; margin-left: 4px;">1:1</button>
+    </div>
+
+    <!-- Escala do Documento -->
+    <div class="preview-scale-wrapper" id="scale-wrapper">
+      
+      <!-- FOLHA A4 DA PROPOSTA COMERCIAL -->
+      <article class="proposal-paper" id="proposal-page">
+        
+        <!-- HEADER DA PROPOSTA -->
+        <header class="proposal-header">
+          <div class="logo-wrap">
+            <div class="logo-text">Desconto <span>Sollar</span></div>
+            <div class="logo-sub">Energia acessível para todos · Minas Gerais</div>
+          </div>
+          <div class="header-badge">
+            <div class="label">Proposta Comercial</div>
+            <div class="date">Gerada em <span id="pv-data-geracao">11/06/2026</span></div>
+          </div>
+        </header>
+
+        <!-- HERO DA PROPOSTA -->
+        <section class="proposal-hero">
+          <div class="hero-left">
+            <div class="hero-tag">Simulação Personalizada</div>
+            <h1>Nossa Proposta<br>para Você</h1>
+            <p class="hero-desc">Elaboramos esta simulação com base no seu consumo real de energia. Sem instalação, sem obra, sem investimento inicial.</p>
+          </div>
+          <div class="hero-right">
+            <div class="cliente-label">Proposta para</div>
+            <div class="cliente-nome" id="pv-cliente-nome">Xand</div>
+            <div class="cliente-end">
+              <span id="pv-cliente-cidade">Minas Gerais</span><br>
+              <span id="pv-cliente-celular">Contato: (32) 9920-0286</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- QUEM SOMOS / COMO FUNCIONA -->
+        <section class="proposal-about">
+          <div class="about-col">
+            <h3>Quem Somos</h3>
+            <p>A Desconto Sollar é especialista em soluções de energia, oferecendo projetos personalizados com descontos exclusivos. Nossa missão é <strong>tornar a energia mais acessível a todos</strong>, reduzindo custos e promovendo a sustentabilidade.</p>
+          </div>
+          <div class="about-col">
+            <h3>Como Funciona</h3>
+            <p>Você se conecta a usinas solares já em operação e os créditos aparecem automaticamente na sua conta CEMIG todo mês. <strong>Processo 100% regulamentado pela ANEEL</strong>, sem burocracia e <span id="pv-fidelidade-texto">sem fidelidade</span>.</p>
+          </div>
+        </section>
+
+        <!-- DETALHES DA PROPOSTA (DINÂMICA) -->
+        <section class="proposal-details">
+          <div class="section-header">
+            <h2>Detalhes da Proposta</h2>
+          </div>
+
+          <table class="proposal-table" id="pv-table-container">
+            <!-- Gerado via JavaScript -->
+          </table>
+
+          <!-- CARDS DE ECONOMIA -->
+          <div class="economy-cards">
+            <div class="econ-card mensal">
+              <div class="card-label">Economia Mensal</div>
+              <div class="card-value" id="pv-card-mensal">R$ 54,72</div>
+              <div class="card-sub">todo mês na sua fatura CEMIG</div>
+            </div>
+            <div class="econ-card anual">
+              <div class="card-label">Economia Anual Projetada</div>
+              <div class="card-value" id="pv-card-anual">R$ 656,64</div>
+              <div class="card-sub">sem instalar nada, sem investimento</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- PRÓXIMOS PASSOS -->
+        <section class="proposal-steps">
+          <div class="section-header">
+            <h2>Próximos Passos</h2>
+          </div>
+          <div class="steps-list">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-text">
+                <strong>Aceite da Proposta</strong>
+                <span>Formalize o aceite para darmos início ao processo de ativação do desconto.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-text">
+                <strong>Envio dos Documentos</strong>
+                <span>Solicitaremos documento de identidade, conta de energia, e-mail e telefone de contato.</span>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-text">
+                <strong>Início da Economia</strong>
+                <span>Em média 30 a 60 dias após o envio dos documentos, os créditos já aparecem automaticamente na sua conta. A Desconto Sollar oferece suporte em todo o processo.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RODAPÉ DA PROPOSTA -->
+        <footer class="proposal-footer">
+          <div class="footer-logo">Desconto <span>Sollar</span></div>
+          <div class="footer-info">
+            Serviço regulamentado pela ANEEL em conformidade com a Lei 14.300/2022<br>
+            e as Resoluções Normativas 482/2012 e 687/2015.
+          </div>
+        </footer>
+
+      </article>
+
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+     7. CÓDIGO JAVASCRIPT — CÁLCULOS E INTERATIVIDADE
+     ========================================================================== -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Elementos de Controle do Formulário
+      const inputNome = document.getElementById('input-nome');
+      const inputCidade = document.getElementById('input-cidade');
+      const inputCelular = document.getElementById('input-celular');
+      const inputData = document.getElementById('input-data');
+      
+      const btnGrupoBt = document.getElementById('btn-grupo-bt');
+      const btnGrupoMt = document.getElementById('btn-grupo-mt');
+      const containerGrupoBt = document.getElementById('container-grupo-bt');
+      const containerGrupoMt = document.getElementById('container-grupo-mt');
+
+      // Elementos de Baixa Tensão (BT)
+      const btnModoKwh = document.getElementById('btn-modo-kwh');
+      const btnModoReais = document.getElementById('btn-modo-reais');
+      const labelInputValor = document.getElementById('label-input-valor');
+      const inputValor = document.getElementById('input-valor');
+      const inputTarifa = document.getElementById('input-tarifa');
+      const containerFase = document.getElementById('fase-selector-container');
+      const phaseBtns = document.querySelectorAll('.phase-btn');
+      const inputDescontoBT = document.getElementById('input-desconto-bt');
+
+      // Elementos de Média Tensão (MT)
+      const inputConsumoHP = document.getElementById('input-consumo-hp');
+      const inputTarifaHP = document.getElementById('input-tarifa-hp');
+      const inputConsumoHFP = document.getElementById('input-consumo-hfp');
+      const inputTarifaHFP = document.getElementById('input-tarifa-hfp');
+      const inputDescontoMT = document.getElementById('input-desconto-mt');
+      const inputFidelidade = document.getElementById('input-fidelidade');
+      
+      // Elementos de Ação
+      const btnPrint = document.getElementById('btn-print');
+      const btnShare = document.getElementById('btn-share');
+      const btnWhatsapp = document.getElementById('btn-whatsapp');
+      const btnClear = document.getElementById('btn-clear');
+      
+      // Elementos do Workspace Zoom
+      const btnZoomIn = document.getElementById('zoom-in');
+      const btnZoomOut = document.getElementById('zoom-out');
+      const btnZoomReset = document.getElementById('zoom-reset');
+      const zoomIndicator = document.getElementById('zoom-indicator');
+      const scaleWrapper = document.getElementById('scale-wrapper');
+      
+      // Estado de Zoom
+      let currentZoom = 0.85; 
+      
+      // Estado Geral da Aplicação
+      let grupoTarifario = 'bt'; // bt ou mt
+      let simMode = 'kwh'; // kwh ou reais (apenas para BT)
+      let phaseType = 'tri'; // mono, bi ou tri (apenas para BT)
+      
+      // ==========================================
+      // CONTROLE DE FORMATOS E MÁSCARAS
+      // ==========================================
+      
+      // Preenche data de hoje como padrão local no input de data
+      const formatTodayDateISO = () => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+      };
+      inputData.value = formatTodayDateISO();
+
+      // Formatar string de data ISO (AAAA-MM-DD) para padrão brasileiro (DD/MM/AAAA)
+      const parseISOToBRDate = (isoStr) => {
+        if (!isoStr) return '';
+        const parts = isoStr.split('-');
+        if (parts.length !== 3) return isoStr;
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      };
+
+      // Formatar moeda brasileira (BRL)
+      const formatCurrencyBRL = (val) => {
+        return new Intl.NumberFormat('pt-BR', {
+          style: 'decimal',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(val);
+      };
+
+      // Máscara de Telefone do Brasil (XX) XXXXX-XXXX
+      const maskPhoneBR = (value) => {
+        if (!value) return "";
+        value = value.replace(/\D/g, "");
+        if (value.length > 11) value = value.slice(0, 11);
+        
+        if (value.length > 10) {
+          return `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+        } else if (value.length > 6) {
+          return `(${value.slice(0, 2)}) ${value.slice(2, 6)}-${value.slice(6)}`;
+        } else if (value.length > 2) {
+          return `(${value.slice(0, 2)}) ${value.slice(2)}`;
+        } else if (value.length > 0) {
+          return `(${value}`;
+        }
+        return value;
+      };
+
+      inputCelular.addEventListener('input', (e) => {
+        e.target.value = maskPhoneBR(e.target.value);
+      });
+
+      // Formatação de tarifa ao sair de foco
+      const setupTariffBlur = (element, defaultValue) => {
+        element.addEventListener('blur', (e) => {
+          let valStr = e.target.value.trim().replace(',', '.');
+          let parsed = parseFloat(valStr);
+          if (isNaN(parsed) || parsed < 0) parsed = defaultValue;
+          e.target.value = parsed.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+          calculateProposal();
+        });
+      };
+      setupTariffBlur(inputTarifa, 1.14);
+      setupTariffBlur(inputTarifaHP, 2.10);
+      setupTariffBlur(inputTarifaHFP, 0.72);
+
+      // ==========================================
+      // ALTERNAR GRUPO TARIFÁRIO (BT vs MT)
+      // ==========================================
+      const setGrupoTarifario = (grupo) => {
+        grupoTarifario = grupo;
+        if (grupo === 'bt') {
+          btnGrupoBt.classList.add('active');
+          btnGrupoMt.classList.remove('active');
+          containerGrupoBt.style.display = 'block';
+          containerGrupoMt.style.display = 'none';
+        } else {
+          btnGrupoMt.classList.add('active');
+          btnGrupoBt.classList.remove('active');
+          containerGrupoBt.style.display = 'none';
+          containerGrupoMt.style.display = 'block';
+        }
+        calculateProposal();
+      };
+
+      btnGrupoBt.addEventListener('click', () => setGrupoTarifario('bt'));
+      btnGrupoMt.addEventListener('click', () => setGrupoTarifario('mt'));
+
+      // ==========================================
+      // ALTERNAR MODO DE SIMULAÇÃO (BT)
+      // ==========================================
+      const setSimMode = (mode) => {
+        simMode = mode;
+        if (mode === 'kwh') {
+          btnModoKwh.classList.add('active');
+          btnModoReais.classList.remove('active');
+          labelInputValor.textContent = "Consumo Médio (kWh)";
+          inputValor.placeholder = "Ex: 192";
+          
+          const val = parseFloat(inputValor.value) || 0;
+          const tarifa = parseFloat(inputTarifa.value.replace(',', '.')) || 1.14;
+          if (val > 0 && btnModoReais.dataset.previousValue === undefined) {
+            inputValor.value = Math.round(val / tarifa);
+          } else if (btnModoKwh.dataset.previousValue) {
+            inputValor.value = btnModoKwh.dataset.previousValue;
+          }
+        } else {
+          btnModoReais.classList.add('active');
+          btnModoKwh.classList.remove('active');
+          labelInputValor.textContent = "Valor Médio da Fatura (R$)";
+          inputValor.placeholder = "Ex: 219";
+          
+          const val = parseFloat(inputValor.value) || 0;
+          const tarifa = parseFloat(inputTarifa.value.replace(',', '.')) || 1.14;
+          btnModoKwh.dataset.previousValue = val;
+          inputValor.value = Math.round(val * tarifa);
+        }
+        calculateProposal();
+      };
+
+      btnModoKwh.addEventListener('click', () => setSimMode('kwh'));
+      btnModoReais.addEventListener('click', () => setSimMode('reais'));
+
+      // ==========================================
+      // CONTROLE DE FASE DE CONEXÃO (BT)
+      // ==========================================
+      phaseBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          phaseBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          phaseType = btn.dataset.conexao;
+          calculateProposal();
+        });
+      });
+
+      // ==========================================
+      // MOTOR DE CÁLCULO PRINCIPAL
+      // ==========================================
+      const calculateProposal = () => {
+        const nome = inputNome.value.trim() || 'Cliente';
+        const cidade = inputCidade.value.trim() || 'Minas Gerais';
+        const celular = inputCelular.value.trim();
+        const dataStr = parseISOToBRDate(inputData.value);
+        
+        const descontoPercentual = grupoTarifario === 'bt' 
+          ? (parseFloat(inputDescontoBT.value) || 25) 
+          : (parseFloat(inputDescontoMT.value) || 15);
+        
+        let economiaMensalBRL = 0;
+        let economiaAnualBRL = 0;
+        
+        let tableHTML = '';
+
+        if (grupoTarifario === 'bt') {
+          // --- CÁLCULO BAIXA TENSÃO (BT) ---
+          const valorInput = parseFloat(inputValor.value) || 0;
+          const tarifa = parseFloat(inputTarifa.value.replace(/\./g, '').replace(',', '.')) || 1.14;
+          const deduzirTaxa = true; // Sempre deduz a taxa em BT
+          
+          let consumoMedioKWh = 0;
+          if (simMode === 'kwh') {
+            consumoMedioKWh = valorInput;
+          } else {
+            consumoMedioKWh = tarifa > 0 ? (valorInput / tarifa) : 0;
+          }
+
+          let kwhDisponibilidade = 0;
+          let faseNome = '';
+          if (phaseType === 'mono') { kwhDisponibilidade = 30; faseNome = 'Monofásico (30 kWh)'; }
+          else if (phaseType === 'bi') { kwhDisponibilidade = 50; faseNome = 'Bifásico (50 kWh)'; }
+          else if (phaseType === 'tri') { kwhDisponibilidade = 100; faseNome = 'Trifásico (100 kWh)'; }
+
+          const consumoCompensavelKWh = Math.max(0, consumoMedioKWh - kwhDisponibilidade);
+
+          const valorCompensavelBRL = consumoCompensavelKWh * tarifa;
+          economiaMensalBRL = Math.max(0, valorCompensavelBRL * (descontoPercentual / 100));
+          economiaAnualBRL = economiaMensalBRL * 12;
+
+          // HTML da Tabela para BT
+          tableHTML = `
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Consumo médio mensal em 12 meses (kWh)</td>
+                <td>${Math.round(consumoMedioKWh).toLocaleString('pt-BR')} kWh</td>
+              </tr>
+              <tr>
+                <td>Tarifa de energia (CEMIG)</td>
+                <td>R$ ${tarifa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}/kWh</td>
+              </tr>
+              <tr>
+                <td>Taxa de disponibilidade CEMIG deduzida (Fase)</td>
+                <td>${faseNome}</td>
+              </tr>
+              <tr>
+                <td>Desconto aplicado</td>
+                <td>${descontoPercentual}%</td>
+              </tr>
+            </tbody>
+          `;
+
+        } else {
+          // --- CÁLCULO MÉDIA TENSÃO (MT) ---
+          const consumoHP = parseFloat(inputConsumoHP.value) || 0;
+          const tarifaHP = parseFloat(inputTarifaHP.value.replace(/\./g, '').replace(',', '.')) || 2.10;
+          const consumoHFP = parseFloat(inputConsumoHFP.value) || 0;
+          const tarifaHFP = parseFloat(inputTarifaHFP.value.replace(/\./g, '').replace(',', '.')) || 0.72;
+
+          const faturaHP = consumoHP * tarifaHP;
+          const faturaHFP = consumoHFP * tarifaHFP;
+          const faturaTotalMT = faturaHP + faturaHFP;
+
+          economiaMensalBRL = Math.max(0, faturaTotalMT * (descontoPercentual / 100));
+          economiaAnualBRL = economiaMensalBRL * 12;
+
+          // HTML da Tabela para MT
+          tableHTML = `
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Consumo Ponta - HP (kWh)</td>
+                <td>${Math.round(consumoHP).toLocaleString('pt-BR')} kWh</td>
+              </tr>
+              <tr>
+                <td>Tarifa Ponta - HP (CEMIG)</td>
+                <td>R$ ${tarifaHP.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}/kWh</td>
+              </tr>
+              <tr>
+                <td>Consumo Fora Ponta - HFP (kWh)</td>
+                <td>${Math.round(consumoHFP).toLocaleString('pt-BR')} kWh</td>
+              </tr>
+              <tr>
+                <td>Tarifa Fora Ponta - HFP (CEMIG)</td>
+                <td>R$ ${tarifaHFP.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}/kWh</td>
+              </tr>
+              <tr>
+                <td>Desconto aplicado</td>
+                <td>${descontoPercentual}%</td>
+              </tr>
+            </tbody>
+          `;
+        }
+
+        // ==========================================
+        // ATUALIZAÇÃO DO PREVIEW
+        // ==========================================
+        document.getElementById('pv-cliente-nome').textContent = nome;
+        document.getElementById('pv-cliente-cidade').textContent = cidade;
+        document.getElementById('pv-cliente-celular').textContent = celular ? `Contato: ${celular}` : '';
+        document.getElementById('pv-data-geracao').textContent = dataStr;
+        
+        // Renderizar a tabela correspondente
+        document.getElementById('pv-table-container').innerHTML = tableHTML;
+
+        const economiaMensalFmt = `R$ ${formatCurrencyBRL(economiaMensalBRL)}`;
+        const economiaAnualFmt = `R$ ${formatCurrencyBRL(economiaAnualBRL)}`;
+
+        document.getElementById('pv-card-mensal').textContent = economiaMensalFmt;
+        document.getElementById('pv-card-anual').textContent = economiaAnualFmt;
+
+        // Atualizar fidelidade no preview
+        const fidelidadeValue = inputFidelidade.value;
+        let fidelidadeTexto = 'sem fidelidade';
+        if (fidelidadeValue === '12') fidelidadeTexto = 'com fidelidade de 12 meses';
+        else if (fidelidadeValue === '24') fidelidadeTexto = 'com fidelidade de 24 meses';
+        else if (fidelidadeValue === '36') fidelidadeTexto = 'com fidelidade de 36 meses';
+        document.getElementById('pv-fidelidade-texto').textContent = fidelidadeTexto;
+      };
+
+      // Vincular eventos de mudança nos inputs
+      const allInputs = [
+        inputNome, inputCidade, inputCelular, inputData, inputValor, inputTarifa, inputDescontoBT,
+        inputConsumoHP, inputTarifaHP, inputConsumoHFP, inputTarifaHFP, inputDescontoMT, inputFidelidade
+      ];
+      allInputs.forEach(el => {
+        el.addEventListener('input', calculateProposal);
+      });
+      inputFidelidade.addEventListener('change', calculateProposal);
+
+      // ==========================================
+      // CONTROLES DE ZOOM DO WORKSPACE
+      // ==========================================
+      const updateZoom = (z) => {
+        currentZoom = parseFloat(z.toFixed(2));
+        if (currentZoom < 0.3) currentZoom = 0.3;
+        if (currentZoom > 2.0) currentZoom = 2.0;
+        scaleWrapper.style.setProperty('--preview-zoom', currentZoom);
+        zoomIndicator.textContent = `${Math.round(currentZoom * 100)}%`;
+      };
+
+      btnZoomIn.addEventListener('click', () => updateZoom(currentZoom + 0.05));
+      btnZoomOut.addEventListener('click', () => updateZoom(currentZoom - 0.05));
+      btnZoomReset.addEventListener('click', () => updateZoom(1.0));
+
+      const fitZoomToScreen = () => {
+        if (window.innerWidth <= 1024) {
+          updateZoom(1.0);
+          return;
+        }
+        const workspaceWidth = document.querySelector('.workspace').clientWidth;
+        const paperWidth = 794; 
+        const targetZoom = (workspaceWidth - 60) / paperWidth;
+        updateZoom(Math.min(targetZoom, 1.0)); 
+      };
+
+      window.addEventListener('resize', fitZoomToScreen);
+      setTimeout(fitZoomToScreen, 100);
+
+      // ==========================================
+      // PERSISTÊNCIA DE PARÂMETROS PELA URL
+      // ==========================================
+      const loadParamsFromURL = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('nome')) inputNome.value = urlParams.get('nome');
+        if (urlParams.has('cidade')) inputCidade.value = urlParams.get('cidade');
+        if (urlParams.has('tel')) inputCelular.value = maskPhoneBR(urlParams.get('tel'));
+        if (urlParams.has('data')) inputData.value = urlParams.get('data');
+        
+        if (urlParams.has('desconto')) {
+          const desc = urlParams.get('desconto');
+          inputDescontoBT.value = desc;
+          inputDescontoMT.value = desc;
+        }
+
+        if (urlParams.has('fidelidade')) {
+          inputFidelidade.value = urlParams.get('fidelidade');
+        }
+        
+        // MT Params
+        if (urlParams.has('chp')) inputConsumoHP.value = urlParams.get('chp');
+        if (urlParams.has('thp')) inputTarifaHP.value = parseFloat(urlParams.get('thp')).toLocaleString('pt-BR');
+        if (urlParams.has('chfp')) inputConsumoHFP.value = urlParams.get('chfp');
+        if (urlParams.has('thfp')) inputTarifaHFP.value = parseFloat(urlParams.get('thfp')).toLocaleString('pt-BR');
+
+        // BT Params
+        if (urlParams.has('tarifa')) inputTarifa.value = parseFloat(urlParams.get('tarifa')).toLocaleString('pt-BR');
+        if (urlParams.has('fase')) {
+          phaseType = urlParams.get('fase');
+          phaseBtns.forEach(btn => {
+            if (btn.dataset.conexao === phaseType) btn.classList.add('active');
+            else btn.classList.remove('active');
+          });
+        }
+
+        // Grupo e modo
+        if (urlParams.has('grupo')) {
+          const gp = urlParams.get('grupo');
+          grupoTarifario = gp;
+          setGrupoTarifario(gp);
+        } else {
+          setGrupoTarifario('bt');
+        }
+
+        if (grupoTarifario === 'bt' && urlParams.has('modo') && urlParams.has('val')) {
+          const mode = urlParams.get('modo');
+          const val = urlParams.get('val');
+          inputValor.value = val;
+          setSimMode(mode);
+        } else {
+          calculateProposal();
+        }
+      };
+
+      loadParamsFromURL();
+
+      // Copiar link preenchido
+      btnShare.addEventListener('click', () => {
+        const nome = encodeURIComponent(inputNome.value);
+        const cidade = encodeURIComponent(inputCidade.value);
+        const tel = encodeURIComponent(inputCelular.value.replace(/\D/g, ''));
+        const data = encodeURIComponent(inputData.value);
+        const desconto = grupoTarifario === 'bt' ? inputDescontoBT.value : inputDescontoMT.value;
+        const fidelidade = inputFidelidade.value;
+        
+        let shareURL = `${window.location.origin}${window.location.pathname}?grupo=${grupoTarifario}&nome=${nome}&cidade=${cidade}&tel=${tel}&data=${data}&desconto=${desconto}&fidelidade=${fidelidade}`;
+        
+        if (grupoTarifario === 'bt') {
+          const tarifa = parseFloat(inputTarifa.value.replace(',', '.')) || 1.14;
+          const fase = phaseType;
+          const val = inputValor.value;
+          shareURL += `&modo=${simMode}&val=${val}&tarifa=${tarifa}&fase=${fase}`;
+        } else {
+          const chp = inputConsumoHP.value;
+          const thp = parseFloat(inputTarifaHP.value.replace(',', '.')) || 2.10;
+          const chfp = inputConsumoHFP.value;
+          const thfp = parseFloat(inputTarifaHFP.value.replace(',', '.')) || 0.72;
+          shareURL += `&chp=${chp}&thp=${thp}&chfp=${chfp}&thfp=${thfp}`;
+        }
+        
+        navigator.clipboard.writeText(shareURL)
+          .then(() => {
+            alert('Link da proposta preenchida copiado com sucesso para a área de transferência!');
+          })
+          .catch(err => {
+            alert('Não foi possível copiar o link.');
+          });
+      });
+
+      // ==========================================
+      // WHATSAPP E OPERAÇÕES EXTRAS
+      // ==========================================
+      
+      // WhatsApp Share
+      btnWhatsapp.addEventListener('click', () => {
+        const nome = inputNome.value.trim() || 'Cliente';
+        const fidVal = inputFidelidade.value;
+        let fidWhatsApp = 'sem custos de fidelidade!';
+        if (fidVal === '12') fidWhatsApp = 'fidelidade de 12 meses!';
+        else if (fidVal === '24') fidWhatsApp = 'fidelidade de 24 meses!';
+        else if (fidVal === '36') fidWhatsApp = 'fidelidade de 36 meses!';
+        
+        let textMessage = '';
+
+        if (grupoTarifario === 'bt') {
+          const valorInput = parseFloat(inputValor.value) || 0;
+          const tarifa = parseFloat(inputTarifa.value.replace(/\./g, '').replace(',', '.')) || 1.14;
+          const descontoPercentual = parseFloat(inputDescontoBT.value) || 25;
+          const deduzirTaxa = true;
+          
+          let consumo = simMode === 'kwh' ? valorInput : (valorInput / tarifa);
+          let fatura = simMode === 'reais' ? valorInput : (valorInput * tarifa);
+          
+          let kwhDisponibilidade = 0;
+          if (phaseType === 'mono') kwhDisponibilidade = 30;
+          else if (phaseType === 'bi') kwhDisponibilidade = 50;
+          else if (phaseType === 'tri') kwhDisponibilidade = 100;
+
+          const consumoCompensavel = Math.max(0, consumo - kwhDisponibilidade);
+
+          const economiaMensal = consumoCompensavel * tarifa * (descontoPercentual / 100);
+          const economiaAnual = economiaMensal * 12;
+          const novaFatura = fatura - economiaMensal;
+
+          textMessage = `*Olá, ${nome}!* ☀️\n\nElaborei sua simulação personalizada de desconto solar com a *Desconto Sollar*.\n\n*Resumo dos seus ganhos (Baixa Tensão):*\n• Consumo Médio: _${Math.round(consumo)} kWh/mês_\n• Fatura Média Atual: _R$ ${formatCurrencyBRL(fatura)}_\n• Desconto Aplicado: _${descontoPercentual}% Fixo_\n\n💸 *Economia Mensal:* R$ ${formatCurrencyBRL(economiaMensal)}\n📈 *Economia Anual Projetada:* R$ ${formatCurrencyBRL(economiaAnual)}\n⚡ *Nova Fatura Estimada:* R$ ${formatCurrencyBRL(novaFatura)}\n\nO melhor de tudo: *Adesão Zero*, sem obras e ${fidWhatsApp}\n\n_Deseja dar início à ativação do seu desconto?_`;
+        } else {
+          const consumoHP = parseFloat(inputConsumoHP.value) || 0;
+          const tarifaHP = parseFloat(inputTarifaHP.value.replace(/\./g, '').replace(',', '.')) || 2.10;
+          const consumoHFP = parseFloat(inputConsumoHFP.value) || 0;
+          const tarifaHFP = parseFloat(inputTarifaHFP.value.replace(/\./g, '').replace(',', '.')) || 0.72;
+          const descontoPercentual = parseFloat(inputDescontoMT.value) || 15;
+
+          const faturaHP = consumoHP * tarifaHP;
+          const faturaHFP = consumoHFP * tarifaHFP;
+          const faturaTotal = faturaHP + faturaHFP;
+          const economiaMensal = faturaTotal * (descontoPercentual / 100);
+          const economiaAnual = economiaMensal * 12;
+          const novaFatura = faturaTotal - economiaMensal;
+
+          textMessage = `*Olá, ${nome}!* ☀️\n\nElaborei sua simulação personalizada de desconto solar com a *Desconto Sollar*.\n\n*Resumo dos seus ganhos (Média Tensão):*\n• Consumo Ponta (HP): _${Math.round(consumoHP)} kWh/mês_\n• Consumo Fora Ponta (HFP): _${Math.round(consumoHFP)} kWh/mês_\n• Fatura Total Estimada: _R$ ${formatCurrencyBRL(faturaTotal)}_\n• Desconto Aplicado: _${descontoPercentual}% Fixo_\n\n💸 *Economia Mensal:* R$ ${formatCurrencyBRL(economiaMensal)}\n📈 *Economia Anual Projetada:* R$ ${formatCurrencyBRL(economiaAnual)}\n⚡ *Nova Fatura Estimada:* R$ ${formatCurrencyBRL(novaFatura)}\n\nO melhor de tudo: *Adesão Zero*, sem obras e ${fidWhatsApp}\n\n_Deseja dar início à ativação do seu desconto?_`;
+        }
+
+        navigator.clipboard.writeText(textMessage)
+          .then(() => {
+            alert('Resumo formatado copiado com sucesso! Você pode colá-lo direto no WhatsApp do cliente.');
+          })
+          .catch(err => {
+            alert('Não foi possível copiar o texto.');
+          });
+      });
+
+      // Impressão nativa
+      btnPrint.addEventListener('click', () => {
+        window.print();
+      });
+
+      // Limpar campos
+      btnClear.addEventListener('click', () => {
+        if (confirm('Tem certeza que deseja redefinir todos os campos para os valores padrão?')) {
+          inputNome.value = 'Cliente';
+          inputCidade.value = 'Minas Gerais';
+          inputCelular.value = '';
+          inputData.value = formatTodayDateISO();
+          
+          // BT Reset
+          inputValor.value = '192';
+          inputTarifa.value = '1,14';
+          inputDescontoBT.value = '25';
+          phaseBtns.forEach(b => {
+            if (b.dataset.conexao === 'tri') b.classList.add('active');
+            else b.classList.remove('active');
+          });
+          phaseType = 'tri';
+          simMode = 'kwh';
+
+          // MT Reset
+          inputConsumoHP.value = '1000';
+          inputTarifaHP.value = '2,10';
+          inputConsumoHFP.value = '5000';
+          inputTarifaHFP.value = '0,72';
+          inputDescontoMT.value = '15';
+
+          inputFidelidade.value = 'sem';
+          setGrupoTarifario('bt');
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>
