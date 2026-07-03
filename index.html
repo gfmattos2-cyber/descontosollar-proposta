@@ -1352,6 +1352,10 @@
       // ==========================================
       const calculateProposal = () => {
         const nome = inputNome.value.trim() || 'Cliente';
+        
+        // Atualiza o título do documento para definir o nome padrão do arquivo PDF
+        document.title = `Proposta Desconto Sollar ${nome}`;
+
         const cidade = inputCidade.value.trim() || 'Minas Gerais';
         const celular = inputCelular.value.trim();
         const dataStr = parseISOToBRDate(inputData.value);
