@@ -795,27 +795,29 @@
     .flyer-card {
       width: 148mm;
       height: 210mm;
-      background-color: var(--branco);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+      background: linear-gradient(135deg, #093a2f 0%, #031a15 100%);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
       border-radius: 16px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
-      padding: 24mm 12mm 12mm; /* Deixa margens excelentes para balcão */
+      padding: 24mm 12mm 0; /* padding inferior removido para esticar a barra preta */
       box-sizing: border-box;
       text-align: left;
     }
 
-    /* Top branding bar */
-    .flyer-card::before {
+    /* Sunburst sutil no fundo */
+    .flyer-card::after {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 10px;
-      background: linear-gradient(90deg, var(--azul) 0%, var(--azul-mid) 100%);
+      bottom: -60px;
+      right: -60px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(0, 230, 118, 0.08) 0%, transparent 70%);
+      z-index: 1;
+      pointer-events: none;
     }
 
     /* Cabeçalho do Flyer */
@@ -827,8 +829,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #f1f5f9;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       padding-bottom: 12px;
+      z-index: 10;
     }
 
     .flyer-card .logo-container {
@@ -838,10 +841,10 @@
     }
 
     .flyer-card .logo-text {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-weight: 800;
       font-size: 1.3rem;
-      color: var(--azul);
+      color: var(--branco);
     }
 
     .flyer-card .logo-text span {
@@ -849,190 +852,254 @@
     }
 
     .flyer-card .brand-tagline {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      color: var(--texto-sub);
+      color: #00E676; /* Verde Lima Neon */
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
     }
 
-    /* Conteúdo Principal */
+    /* Gancho do Título */
     .flyer-card .hero-section {
-      margin-top: 10px;
-      margin-bottom: 18px;
+      margin-top: 6px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 10;
     }
 
     .flyer-card .hero-title {
       font-family: 'Sora', sans-serif;
+      font-size: 1.95rem;
       font-weight: 800;
-      font-size: 1.7rem;
-      color: var(--azul-esc);
-      line-height: 1.25;
-      letter-spacing: -0.8px;
-      margin-bottom: 8px;
+      color: var(--branco);
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
     }
 
     .flyer-card .hero-title span {
       color: var(--azul-mid);
+      text-shadow: 0 0 15px rgba(255, 107, 0, 0.2);
     }
 
     .flyer-card .hero-subtitle {
-      font-size: 0.82rem;
-      color: var(--texto-sub);
-      line-height: 1.45;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      color: #b2dfdb;
+      font-weight: 600;
+      margin-top: 4px;
     }
 
-    /* Bloco da Parceria Exclusiva */
+    /* Parceria Comercial (Estilo Selo de Parceria Certificada) */
     .flyer-card .partner-badge {
-      background: linear-gradient(135deg, rgba(37,136,135,0.06) 0%, rgba(216,92,3,0.04) 100%);
-      border: 1px solid rgba(37, 136, 135, 0.15);
-      border-left: 5px solid var(--azul-mid);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin-bottom: 20px;
-      text-align: center;
+      background: rgba(0, 230, 118, 0.06);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+      border-radius: 14px;
+      padding: 10px 16px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 4px 15px rgba(0, 230, 118, 0.05);
+    }
+
+    .flyer-card .partner-icon {
+      background-color: rgba(0, 230, 118, 0.12);
+      color: #00E676;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(0, 230, 118, 0.25);
+      flex-shrink: 0;
+    }
+
+    .flyer-card .partner-text {
+      display: flex;
+      flex-direction: column;
     }
 
     .flyer-card .partner-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 800;
-      color: var(--azul-mid);
+      color: #00E676;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      display: block;
-      margin-bottom: 3px;
+      letter-spacing: 1.2px;
+      margin-bottom: 1px;
     }
 
     .flyer-card .partner-name {
       font-family: 'Sora', sans-serif;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       font-weight: 800;
-      color: var(--azul-esc);
+      color: var(--branco);
+      text-shadow: 0 0 10px rgba(0, 230, 118, 0.15);
     }
 
-    /* Seção de Benefícios */
-    .flyer-card .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 22px;
+    /* Colunas principais */
+    .flyer-card .main-grid {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+      height: 280px;
+      margin-top: 15px;
     }
 
-    .flyer-card .feature-card {
-      background-color: var(--cinza-bg);
-      border: 1px solid var(--cinza-borda);
-      border-radius: 10px;
-      padding: 12px 10px;
-      text-align: center;
+    .flyer-card .left-column {
+      width: 58%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
     }
 
-    .flyer-card .feature-num {
-      font-family: 'Sora', sans-serif;
-      font-size: 1.4rem;
+    /* Destaque de Desconto */
+    .flyer-card .discount-banner {
+      background-color: rgba(255, 107, 0, 0.06);
+      border: 1.5px solid rgba(255, 107, 0, 0.2);
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+    }
+
+    .flyer-card .discount-label {
+      font-size: 0.72rem;
       font-weight: 800;
-      color: var(--azul);
-      margin-bottom: 4px;
+      color: var(--branco);
+      letter-spacing: 1px;
       display: block;
     }
 
-    .flyer-card .feature-title {
-      font-size: 0.76rem;
+    .flyer-card .discount-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 4rem;
       font-weight: 800;
-      color: var(--texto);
-      margin-bottom: 3px;
+      color: var(--azul-mid);
+      line-height: 0.95;
+      margin: 2px 0;
+      letter-spacing: -2px;
+      text-shadow: 0 2px 10px rgba(255, 107, 0, 0.35);
+    }
+
+    .flyer-card .discount-sublabel {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--branco);
+      line-height: 1.3;
+      display: block;
+    }
+
+    .flyer-card .discount-sublabel span {
+      color: #00E676;
+    }
+
+    /* Lista de Vantagens */
+    .flyer-card .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .flyer-card .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .flyer-card .feature-icon-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #00E676;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .flyer-card .feature-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .flyer-card .feature-title {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: var(--branco);
+      letter-spacing: 0.2px;
     }
 
     .flyer-card .feature-desc {
       font-family: 'DM Sans', sans-serif;
-      font-size: 0.65rem;
-      color: var(--texto-sub);
-      line-height: 1.35;
+      font-size: 0.58rem;
+      color: #b2dfdb;
+      line-height: 1.25;
     }
 
-    /* Como Garantir */
-    .flyer-card .how-to-section {
-      background-color: #fafbfc;
-      border: 1.5px solid #edf2f7;
-      border-radius: 12px;
-      padding: 8px 12px;
-      margin-bottom: 12px;
-    }
-
-    .flyer-card .section-title {
-      font-family: 'Sora', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--azul-esc);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-
-    .flyer-card .steps-row {
+    /* Promoter Container (Foto do Apresentador) */
+    .flyer-card .promoter-container {
+      position: absolute;
+      left: 50%;
+      bottom: -80px;
+      width: 320px;
+      height: 380px;
+      transform: translateX(-20%);
+      z-index: 1;
       display: flex;
-      justify-content: space-between;
-      gap: 15px;
+      align-items: flex-end;
+      pointer-events: none;
     }
 
-    .flyer-card .step-item {
-      flex: 1;
-      text-align: center;
-      position: relative;
-    }
-
-    .flyer-card .step-icon-circle {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background-color: rgba(37, 136, 135, 0.1);
-      color: var(--azul);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 800;
-      margin-bottom: 3px;
-    }
-
-    .flyer-card .step-text {
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--texto);
-      line-height: 1.35;
-    }
-
-    .flyer-card .step-text span {
-      font-family: 'DM Sans', sans-serif;
-      color: var(--texto-sub);
-      font-weight: 500;
+    .flyer-card .promoter-img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
       display: block;
-      margin-top: 1px;
+      transform: scale(1.4);
+      transform-origin: bottom center;
+      opacity: 0.85;
+      mix-blend-mode: screen;
+      -webkit-mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+      mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
     }
 
-    /* Rodapé com QR Code e CTA do WhatsApp */
+    /* Rodapé de Ação e QR Code */
     .flyer-card .footer-action {
+      background-color: #041e19;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding-top: 5px;
+      justify-content: space-between;
+      gap: 12px;
       margin-top: auto;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 10;
     }
 
     .flyer-card .cta-column {
       flex: 1;
+      text-align: left;
     }
 
     .flyer-card .cta-tag {
       display: inline-block;
-      background-color: rgba(216, 92, 3, 0.08);
+      background-color: transparent;
       color: var(--azul-mid);
-      font-size: 0.62rem;
+      font-size: 0.68rem;
       font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 20px;
+      padding: 0;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
@@ -1040,32 +1107,31 @@
 
     .flyer-card .cta-title {
       font-family: 'Sora', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      color: var(--azul-esc);
-      line-height: 1.25;
+      color: var(--branco);
+      line-height: 1.2;
       margin-bottom: 4px;
     }
 
     .flyer-card .cta-desc {
       font-size: 0.7rem;
-      color: var(--texto-sub);
+      color: #b2dfdb;
       line-height: 1.35;
       font-family: 'DM Sans', sans-serif;
     }
 
     .flyer-card .qr-card {
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
       background-color: var(--branco);
-      border: 1.5px solid var(--cinza-borda);
-      border-radius: 10px;
-      padding: 6px;
+      border-radius: 8px;
+      padding: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 10px rgba(37,136,135,0.05);
       position: relative;
+      flex-shrink: 0;
     }
 
     .flyer-card .qr-image {
@@ -1076,17 +1142,34 @@
 
     .flyer-card .qr-badge {
       position: absolute;
-      bottom: -6px;
-      right: -6px;
+      bottom: -4px;
+      right: -4px;
       background-color: #25D366;
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid var(--branco);
+      border: 1.5px solid var(--branco);
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Barra Inferior Preta com Website */
+    .flyer-card .bottom-web-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #020f0d;
+      color: #00E676;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 6px 0;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      z-index: 10;
     }
 
     /* ==========================================================================
@@ -1098,13 +1181,30 @@
         margin: 0;
       }
       
+      html {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100% !important;
+      }
+      
       body {
-        background: var(--branco);
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        overflow: hidden !important;
         color: var(--texto);
         display: block;
-        overflow: visible;
-        height: auto;
-        min-height: auto;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body.tool-proposta {
+        background-color: #ffffff !important;
+      }
+
+      body.tool-flyer {
+        background-color: #031a15 !important;
       }
 
       .sidebar,
@@ -1119,8 +1219,8 @@
         margin: 0 !important;
         background: transparent !important;
         display: block !important;
-        overflow: visible !important;
-        height: auto !important;
+        overflow: hidden !important;
+        height: 100% !important;
       }
 
       .preview-scale-wrapper {
@@ -1130,6 +1230,7 @@
         width: 210mm !important;
         height: 297mm !important;
         display: block !important;
+        position: relative;
       }
 
       /* Regras quando visualizando Proposta */
@@ -1140,10 +1241,13 @@
         box-shadow: none !important;
         margin: 0 !important;
         border: none !important;
+        position: absolute;
+        top: 0;
+        left: 0;
         page-break-after: avoid;
         page-break-before: avoid;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
       body.tool-proposta .flyer-card {
         display: none !important;
@@ -1155,6 +1259,7 @@
       }
       body.tool-flyer .flyer-card {
         display: flex !important;
+        background: linear-gradient(135deg, #093a2f 0%, #031a15 100%) !important;
         box-shadow: none !important;
         border-radius: 0 !important;
         width: 148mm !important;
@@ -1162,13 +1267,13 @@
         position: absolute;
         top: 0;
         left: 0;
-        transform: scale(1.414) !important;
+        transform: scale(1.414) !important; /* Proporção exata de A5 para preenchimento de A4 */
         transform-origin: top left;
         margin: 0 !important;
         page-break-after: avoid;
         page-break-before: avoid;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
     }
 
@@ -1299,7 +1404,7 @@
 
         <div class="form-group">
           <label for="input-desconto-bt">Percentual de Desconto (%)</label>
-          <input type="number" id="input-desconto-bt" class="form-control" value="25" placeholder="Ex: 25">
+          <input type="number" id="input-desconto-bt" class="form-control" value="22" placeholder="Ex: 22">
         </div>
       </div>
 
@@ -1357,7 +1462,7 @@
 
       <div class="form-group">
         <label for="input-flyer-desconto">Percentual de Desconto (%)</label>
-        <input type="number" id="input-flyer-desconto" class="form-control" value="25" placeholder="Ex: 25" min="5" max="30">
+        <input type="number" id="input-flyer-desconto" class="form-control" value="22" placeholder="Ex: 22" min="5" max="30">
       </div>
     </div>
 
@@ -1518,13 +1623,13 @@
           <div class="logo-container">
             <svg width="24" height="24" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g transform="translate(150, 150)">
-                <line x1="-80" y1="80" x2="80" y2="-80" stroke="#258887" stroke-width="24" stroke-linecap="round" />
+                <line x1="-80" y1="80" x2="80" y2="-80" stroke="#00E676" stroke-width="24" stroke-linecap="round" />
                 <line x1="-72" y1="-72" x2="-36" y2="-36" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
                 <line x1="36" y1="36" x2="72" y2="72" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
                 <line x1="-102" y1="0" x2="-66" y2="0" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
                 <line x1="66" y1="0" x2="102" y2="0" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
-                <circle cx="0" cy="-94" r="20" fill="#258887" />
-                <circle cx="0" cy="94" r="20" fill="#258887" />
+                <circle cx="0" cy="-94" r="20" fill="#00E676" />
+                <circle cx="0" cy="94" r="20" fill="#00E676" />
               </g>
             </svg>
             <div class="logo-text">Desconto <span>Sollar</span></div>
@@ -1534,55 +1639,77 @@
 
         <!-- Título de Impacto -->
         <div class="hero-section">
-          <h1 class="hero-title">Sua conta de luz com <span id="pv-flyer-title-desc-display">até 25% de desconto</span></h1>
-          <p class="hero-subtitle">Reduza o valor da sua fatura mensal da CEMIG de forma limpa, sustentável e digital.</p>
+          <h1 class="hero-title">Sua conta de luz <span>está cara?</span></h1>
+          <p class="hero-subtitle">Energia limpa, mais barata e sem nenhum investimento!</p>
         </div>
 
         <!-- Parceria Comercial -->
         <div class="partner-badge">
-          <span class="partner-label">Desconto Exclusivo para Clientes</span>
-          <div class="partner-name" id="pv-flyer-partner-display">Cabocla de Nova Lima</div>
-        </div>
-
-        <!-- Grid de Benefícios ("Três Zeros") -->
-        <div class="features-grid">
-          <div class="feature-card">
-            <span class="feature-num" id="pv-flyer-grid-desc-display" style="color: var(--azul-mid);">25%</span>
-            <div class="feature-title">Desconto</div>
-            <p class="feature-desc">Economia mensal na fatura da CEMIG.</p>
+          <div class="partner-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 11 2 2 4-4"/>
+            </svg>
           </div>
-          <div class="feature-card">
-            <span class="feature-num">R$ 0,00</span>
-            <div class="feature-title">Investimento</div>
-            <p class="feature-desc">Sem obras ou taxa de adesão no seu imóvel.</p>
-          </div>
-          <div class="feature-card">
-            <span class="feature-num">Zero</span>
-            <div class="feature-title">Burocracia</div>
-            <p class="feature-desc">Adesão gratuita e digital em 2 minutos.</p>
+          <div class="partner-text">
+            <span class="partner-label">Parceria Certificada</span>
+            <div class="partner-name" id="pv-flyer-partner-display">Cabocla de Nova Lima</div>
           </div>
         </div>
 
-        <!-- Infográfico Passo a Passo -->
-        <div class="how-to-section">
-          <h3 class="section-title">Como Ativar seu Desconto:</h3>
-          <div class="steps-row">
-            <div class="step-item">
-              <div class="step-icon-circle">1</div>
-              <p class="step-text">Escaneie o QR<span>Aponte a câmera</span></p>
+        <!-- Split de Conteúdo (Esquerda: Vantagens | Direita: Apresentador) -->
+        <div class="main-grid">
+          <div class="left-column">
+            
+            <!-- Banner de Desconto -->
+            <div class="discount-banner">
+              <span class="discount-label">DESCONTO DE</span>
+              <div class="discount-value" id="pv-flyer-title-desc-display">22%</div>
+              <span class="discount-sublabel">NA SUA CONTA DE LUZ <span>SEM NENHUM INVESTIMENTO!</span></span>
             </div>
-            <div class="step-item">
-              <div class="step-icon-circle">2</div>
-              <p class="step-text">Envie a Fatura<span>Pelo WhatsApp</span></p>
+
+            <!-- Lista de Vantagens -->
+            <div class="features-list">
+              <div class="feature-item">
+                <div class="feature-icon-circle">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                </div>
+                <div class="feature-content">
+                  <span class="feature-title">ENERGIA LIMPA E SUSTENTÁVEL</span>
+                  <span class="feature-desc">Sem instalação de placas ou obras no imóvel.</span>
+                </div>
+              </div>
+
+              <div class="feature-item">
+                <div class="feature-icon-circle">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <div class="feature-content">
+                  <span class="feature-title">MAIS ECONOMIA TODOS OS MESES</span>
+                  <span class="feature-desc">Desconto direto e mensal garantido na conta.</span>
+                </div>
+              </div>
+
+              <div class="feature-item">
+                <div class="feature-icon-circle">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div class="feature-content">
+                  <span class="feature-title">100% LEGAL E REGULAMENTADO</span>
+                  <span class="feature-desc">Homologado pela ANEEL e garantido por Lei Federal.</span>
+                </div>
+              </div>
             </div>
-            <div class="step-item">
-              <div class="step-icon-circle">3</div>
-              <p class="step-text">Economize!<span>Desconto mensal</span></p>
-            </div>
+
+          </div>
+
+          <!-- Apresentador (Direta) -->
+          <div class="promoter-container">
+            <img class="promoter-img" src="sollar_promoter.png" alt="Apresentador Desconto Sollar">
           </div>
         </div>
 
-        <!-- Rodapé com QR Code e CTA do WhatsApp -->
+        <!-- Rodapé de Ação e QR Code -->
         <div class="footer-action">
           <div class="cta-column">
             <span class="cta-tag">Adesão Grátis</span>
@@ -1592,11 +1719,17 @@
           <div class="qr-card">
             <img class="qr-image" id="pv-flyer-qr-display" src="" alt="QR Code de Adesão">
             <div class="qr-badge">
-              <!-- WhatsApp Icon inside QR Code -->
               <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.968C16.528 2.008 14.068.996 11.45.996c-5.447 0-9.875 4.37-9.879 9.8.002 2.012.528 3.982 1.523 5.736l-.991 3.616 3.73-.974zm12.013-6.937c-.328-.164-1.94-.959-2.241-1.07-.301-.109-.52-.164-.738.164-.219.329-.848 1.07-1.039 1.29-.19.219-.382.246-.71.082-.328-.164-1.386-.511-2.64-1.63-1.037-.926-1.737-2.072-1.941-2.4-.204-.329-.022-.507.142-.671.147-.148.328-.383.493-.574.164-.19.219-.328.328-.548.109-.219.055-.411-.028-.575-.082-.164-.738-1.78-.973-2.347-.216-.52-.464-.447-.638-.456-.164-.008-.356-.01-.548-.01-.191 0-.507.071-.772.356-.266.287-1.012.986-1.012 2.402 0 1.417 1.029 2.787 1.173 2.979.144.192 2.027 3.132 4.909 4.372.685.295 1.22.471 1.637.603.689.219 1.316.188 1.812.114.553-.083 1.94-.793 2.213-1.56.274-.768.274-1.426.192-1.56-.083-.134-.301-.219-.629-.383z"/></svg>
             </div>
           </div>
         </div>
+
+        <!-- Barra Inferior Preta com Website -->
+        <div class="bottom-web-bar">
+          <span>www.descontosollar.com.br</span>
+        </div>
+
+      </div>
 
       </div>
 
@@ -1872,7 +2005,7 @@
         const dataStr = parseISOToBRDate(inputData.value);
         
         const descontoPercentual = grupoTarifario === 'bt' 
-          ? (parseFloat(inputDescontoBT.value) || 25) 
+          ? (parseFloat(inputDescontoBT.value) || 22) 
           : (parseFloat(inputDescontoMT.value) || 15);
         
         let economiaMensalBRL = 0;
@@ -2012,7 +2145,7 @@
       const updateFlyer = () => {
         const nome = inputFlyerParceiro.value.trim() || "Parceiro Oficial";
         const ref = inputFlyerRef.value.trim().toUpperCase() || "SOL";
-        const desc = inputFlyerDesconto.value.trim() || "25";
+        const desc = parseFloat(inputFlyerDesconto.value.trim()) || 22;
 
         // Atualizar o título do documento para salvar o PDF
         document.title = `Flyer Parceria Desconto Sollar - ${nome}`;
@@ -2021,11 +2154,7 @@
         document.getElementById('pv-flyer-partner-display').textContent = nome;
         
         // Atualizar o título do desconto no flyer
-        document.getElementById('pv-flyer-title-desc-display').textContent = `até ${desc}% de desconto`;
-
-        // Atualizar o primeiro card do grid com a taxa de desconto selecionada
-        const gridDesc = document.getElementById('pv-flyer-grid-desc-display');
-        if (gridDesc) gridDesc.textContent = `${desc}%`;
+        document.getElementById('pv-flyer-title-desc-display').textContent = `${desc}%`;
 
         // Gerar a URL completa com o cupom/ref, o nome e o desconto do parceiro para o QR Code
         const linkFinal = `https://descontosollar.com.br/adesao.html?ref=${encodeURIComponent(ref)}&nome=${encodeURIComponent(nome)}&desc=${encodeURIComponent(desc)}`;
@@ -2221,7 +2350,7 @@
         if (grupoTarifario === 'bt') {
           const valorInput = parseFloat(inputValor.value) || 0;
           const tarifa = parseFloat(inputTarifa.value.replace(/\./g, '').replace(',', '.')) || 1.14;
-          const descontoPercentual = parseFloat(inputDescontoBT.value) || 25;
+          const descontoPercentual = parseFloat(inputDescontoBT.value) || 22;
           
           let consumo = simMode === 'kwh' ? valorInput : (valorInput / tarifa);
           let fatura = simMode === 'reais' ? valorInput : (valorInput * tarifa);
@@ -2281,7 +2410,7 @@
             // BT Reset
             inputValor.value = '192';
             inputTarifa.value = '1,14';
-            inputDescontoBT.value = '25';
+            inputDescontoBT.value = '22';
             phaseBtns.forEach(b => {
               if (b.dataset.conexao === 'tri') b.classList.add('active');
               else b.classList.remove('active');
@@ -2302,7 +2431,7 @@
             // Flyer Reset
             inputFlyerParceiro.value = 'Cabocla de Nova Lima';
             inputFlyerRef.value = 'CABOCLANEW';
-            inputFlyerDesconto.value = '25';
+            inputFlyerDesconto.value = '22';
             updateFlyer();
           }
         }
