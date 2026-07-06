@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerador de Propostas — Desconto Sollar</title>
-  <meta name="description" content="Ferramenta administrativa para geração e impressão de propostas personalizadas de economia solar.">
+  <title>Painel Administrativo — Desconto Sollar</title>
+  <meta name="description" content="Ferramenta administrativa unificada para geração de propostas comerciais (A4) e flyers de parceria (A5).">
   
   <!-- Fontes Oficiais -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -279,7 +279,7 @@
     }
 
     /* ==========================================================================
-       3. ÁREA DE TRABALHO & VISUALIZAÇÃO DO A4
+       3. ÁREA DE TRABALHO & VISUALIZAÇÃO DO PREVIEW
        ========================================================================== */
     .workspace {
       background: #0b0f19;
@@ -345,7 +345,7 @@
     }
 
     /* ==========================================================================
-       4. ESTILIZAÇÃO DO DOCUMENTO A4 (IDÊNTICO AO PDF DO CHATBOT)
+       4. ESTILIZAÇÃO DO DOCUMENTO A4 (PROPOSTA COMERCIAL)
        ========================================================================== */
     .proposal-paper {
       width: 210mm;
@@ -790,11 +790,311 @@
     }
 
     /* ==========================================================================
-       5. ESTILOS DE IMPRESSÃO (@MEDIA PRINT)
+       8. ESTILOS DO FLYER A5 (PARCERIA) - NAMESPACED COM .flyer-card
+       ========================================================================== */
+    .flyer-card {
+      width: 148mm;
+      height: 210mm;
+      background-color: var(--branco);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding: 24mm 12mm 12mm; /* Deixa margens excelentes para balcão */
+      box-sizing: border-box;
+      text-align: left;
+    }
+
+    /* Top branding bar */
+    .flyer-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(90deg, var(--azul) 0%, var(--azul-mid) 100%);
+    }
+
+    /* Cabeçalho do Flyer */
+    .flyer-card .header {
+      position: absolute;
+      top: 25px;
+      left: 12mm;
+      right: 12mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 12px;
+    }
+
+    .flyer-card .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flyer-card .logo-text {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: var(--azul);
+    }
+
+    .flyer-card .logo-text span {
+      color: var(--azul-mid);
+    }
+
+    .flyer-card .brand-tagline {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--texto-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Conteúdo Principal */
+    .flyer-card .hero-section {
+      margin-top: 10px;
+      margin-bottom: 18px;
+    }
+
+    .flyer-card .hero-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.7rem;
+      color: var(--azul-esc);
+      line-height: 1.25;
+      letter-spacing: -0.8px;
+      margin-bottom: 8px;
+    }
+
+    .flyer-card .hero-title span {
+      color: var(--azul-mid);
+    }
+
+    .flyer-card .hero-subtitle {
+      font-size: 0.82rem;
+      color: var(--texto-sub);
+      line-height: 1.45;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* Bloco da Parceria Exclusiva */
+    .flyer-card .partner-badge {
+      background: linear-gradient(135deg, rgba(37,136,135,0.06) 0%, rgba(216,92,3,0.04) 100%);
+      border: 1px solid rgba(37, 136, 135, 0.15);
+      border-left: 5px solid var(--azul-mid);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .flyer-card .partner-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--azul-mid);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .flyer-card .partner-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--azul-esc);
+    }
+
+    /* Seção de Benefícios */
+    .flyer-card .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .flyer-card .feature-card {
+      background-color: var(--cinza-bg);
+      border: 1px solid var(--cinza-borda);
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+
+    .flyer-card .feature-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--azul);
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .flyer-card .feature-title {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: var(--texto);
+      margin-bottom: 3px;
+    }
+
+    .flyer-card .feature-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      color: var(--texto-sub);
+      line-height: 1.35;
+    }
+
+    /* Como Garantir */
+    .flyer-card .how-to-section {
+      background-color: #fafbfc;
+      border: 1.5px solid #edf2f7;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+
+    .flyer-card .section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--azul-esc);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+
+    .flyer-card .steps-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .flyer-card .step-item {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .flyer-card .step-icon-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-color: rgba(37, 136, 135, 0.1);
+      color: var(--azul);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+
+    .flyer-card .step-text {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--texto);
+      line-height: 1.35;
+    }
+
+    .flyer-card .step-text span {
+      font-family: 'DM Sans', sans-serif;
+      color: var(--texto-sub);
+      font-weight: 500;
+      display: block;
+      margin-top: 1px;
+    }
+
+    /* Rodapé com QR Code e CTA do WhatsApp */
+    .flyer-card .footer-action {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-top: 5px;
+      margin-top: auto;
+    }
+
+    .flyer-card .cta-column {
+      flex: 1;
+    }
+
+    .flyer-card .cta-tag {
+      display: inline-block;
+      background-color: rgba(216, 92, 3, 0.08);
+      color: var(--azul-mid);
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .flyer-card .cta-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--azul-esc);
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .flyer-card .cta-desc {
+      font-size: 0.7rem;
+      color: var(--texto-sub);
+      line-height: 1.35;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .flyer-card .qr-card {
+      width: 120px;
+      height: 120px;
+      background-color: var(--branco);
+      border: 1.5px solid var(--cinza-borda);
+      border-radius: 10px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(37,136,135,0.05);
+      position: relative;
+    }
+
+    .flyer-card .qr-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .flyer-card .qr-badge {
+      position: absolute;
+      bottom: -6px;
+      right: -6px;
+      background-color: #25D366;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--branco);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* ==========================================================================
+       9. ESTILOS DE IMPRESSÃO (@MEDIA PRINT)
        ========================================================================== */
     @media print {
       @page {
-        size: A4;
+        size: A4 portrait;
         margin: 0;
       }
       
@@ -832,7 +1132,9 @@
         display: block !important;
       }
 
-      .proposal-paper {
+      /* Regras quando visualizando Proposta */
+      body.tool-proposta .proposal-paper {
+        display: flex !important;
         width: 210mm !important;
         height: 297mm !important;
         box-shadow: none !important;
@@ -843,10 +1145,35 @@
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
+      body.tool-proposta .flyer-card {
+        display: none !important;
+      }
+
+      /* Regras quando visualizando Flyer */
+      body.tool-flyer .proposal-paper {
+        display: none !important;
+      }
+      body.tool-flyer .flyer-card {
+        display: flex !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        width: 148mm !important;
+        height: 210mm !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: scale(1.414) !important;
+        transform-origin: top left;
+        margin: 0 !important;
+        page-break-after: avoid;
+        page-break-before: avoid;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
     }
 
     /* ==========================================================================
-       6. ESTILOS RESPONSIVOS PARA TELAS MENORES (WEB-BASED SIDEBAR)
+       10. ESTILOS RESPONSIVOS PARA TELAS MENORES (WEB-BASED SIDEBAR)
        ========================================================================== */
     @media (max-width: 1024px) {
       body {
@@ -880,128 +1207,158 @@
     }
   </style>
 </head>
-<body>
+<body class="tool-proposta">
 
   <!-- 1. PAINEL DE CONTROLE LATERAL -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h1>Desconto Sollar <span>Simulador</span></h1>
-      <p>Gerador oficial de Propostas Comerciais</p>
+      <p>Painel Administrativo de Documentos</p>
     </div>
 
-    <!-- Seção de Dados do Cliente -->
-    <div class="form-group">
-      <label for="input-nome">Nome do Cliente</label>
-      <input type="text" id="input-nome" class="form-control" value="Xand" placeholder="Ex: Alexandre Silva">
-    </div>
-
-    <div class="form-group">
-      <label for="input-cidade">Cidade / Estado</label>
-      <input type="text" id="input-cidade" class="form-control" value="Minas Gerais" placeholder="Ex: Belo Horizonte / MG">
-    </div>
-
-    <div class="form-group">
-      <label for="input-celular">WhatsApp / Celular</label>
-      <input type="text" id="input-celular" class="form-control" value="(32) 9920-0286" placeholder="Ex: (31) 98888-8888">
-    </div>
-
-    <div class="form-group">
-      <label for="input-data">Data de Emissão</label>
-      <input type="date" id="input-data" class="form-control">
-    </div>
-
-    <hr style="border: 0; border-top: 1px solid var(--adm-border); margin: 15px 0;">
-
-    <!-- Seletor de Grupo Tarifário (BT vs MT) -->
-    <div class="form-group">
-      <label>Grupo Tarifário</label>
-      <div class="btn-group-toggle">
-        <button type="button" class="toggle-btn active" data-grupo="bt" id="btn-grupo-bt">Baixa Tensão (BT)</button>
-        <button type="button" class="toggle-btn" data-grupo="mt" id="btn-grupo-mt">Média Tensão (MT)</button>
+    <!-- Seletor de Ferramenta Ativa (Proposta vs Flyer) -->
+    <div class="form-group" style="margin-bottom: 20px;">
+      <label>Ferramenta Ativa</label>
+      <div class="btn-group-toggle" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+        <button type="button" class="toggle-btn active" id="btn-tab-proposta">Proposta Comercial</button>
+        <button type="button" class="toggle-btn" id="btn-tab-flyer">Flyer de Parceria</button>
       </div>
     </div>
 
-    <!-- PAINEL DE INPUTS DA BAIXA TENSÃO (BT) -->
-    <div id="container-grupo-bt">
+    <!-- CONTROLES DO GERADOR DE PROPOSTAS -->
+    <div id="panel-controls-proposta">
+      <!-- Seção de Dados do Cliente -->
       <div class="form-group">
-        <label>Modo de Simulação</label>
+        <label for="input-nome">Nome do Cliente</label>
+        <input type="text" id="input-nome" class="form-control" value="Xand" placeholder="Ex: Alexandre Silva">
+      </div>
+
+      <div class="form-group">
+        <label for="input-cidade">Cidade / Estado</label>
+        <input type="text" id="input-cidade" class="form-control" value="Minas Gerais" placeholder="Ex: Belo Horizonte / MG">
+      </div>
+
+      <div class="form-group">
+        <label for="input-celular">WhatsApp / Celular</label>
+        <input type="text" id="input-celular" class="form-control" value="(32) 9920-0286" placeholder="Ex: (31) 98888-8888">
+      </div>
+
+      <div class="form-group">
+        <label for="input-data">Data de Emissão</label>
+        <input type="date" id="input-data" class="form-control">
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid var(--adm-border); margin: 15px 0;">
+
+      <!-- Seletor de Grupo Tarifário (BT vs MT) -->
+      <div class="form-group">
+        <label>Grupo Tarifário</label>
         <div class="btn-group-toggle">
-          <button type="button" class="toggle-btn active" data-modo="kwh" id="btn-modo-kwh">Por Consumo (kWh)</button>
-          <button type="button" class="toggle-btn" data-modo="reais" id="btn-modo-reais">Por Fatura (R$)</button>
+          <button type="button" class="toggle-btn active" data-grupo="bt" id="btn-grupo-bt">Baixa Tensão (BT)</button>
+          <button type="button" class="toggle-btn" data-grupo="mt" id="btn-grupo-mt">Média Tensão (MT)</button>
         </div>
       </div>
 
-      <div class="form-group">
-        <label id="label-input-valor" for="input-valor">Consumo Médio (kWh)</label>
-        <input type="number" id="input-valor" class="form-control" value="192" placeholder="Ex: 192">
-      </div>
+      <!-- PAINEL DE INPUTS DA BAIXA TENSÃO (BT) -->
+      <div id="container-grupo-bt">
+        <div class="form-group">
+          <label>Modo de Simulação</label>
+          <div class="btn-group-toggle">
+            <button type="button" class="toggle-btn active" data-modo="kwh" id="btn-modo-kwh">Por Consumo (kWh)</button>
+            <button type="button" class="toggle-btn" data-modo="reais" id="btn-modo-reais">Por Fatura (R$)</button>
+          </div>
+        </div>
 
-      <div class="form-group">
-        <label for="input-tarifa">Tarifa da Concessionária (R$/kWh)</label>
-        <input type="text" id="input-tarifa" class="form-control" value="1,14" placeholder="Ex: 1,14">
-      </div>
+        <div class="form-group">
+          <label id="label-input-valor" for="input-valor">Consumo Médio (kWh)</label>
+          <input type="number" id="input-valor" class="form-control" value="192" placeholder="Ex: 192">
+        </div>
 
-      <div class="form-group" id="fase-selector-container" style="display: block;">
-        <label>Fase de Conexão (Dedução Ativa)</label>
-        <div class="phase-selector-group">
-          <button type="button" class="phase-btn mono" data-conexao="mono">
-            <span>Monofásico</span>
-            <small>30 kWh</small>
-          </button>
-          <button type="button" class="phase-btn bi" data-conexao="bi">
-            <span>Bifásico</span>
-            <small>50 kWh</small>
-          </button>
-          <button type="button" class="phase-btn tri active" data-conexao="tri">
-            <span>Trifásico</span>
-            <small>100 kWh</small>
-          </button>
+        <div class="form-group">
+          <label for="input-tarifa">Tarifa da Concessionária (R$/kWh)</label>
+          <input type="text" id="input-tarifa" class="form-control" value="1,14" placeholder="Ex: 1,14">
+        </div>
+
+        <div class="form-group" id="fase-selector-container" style="display: block;">
+          <label>Fase de Conexão (Dedução Ativa)</label>
+          <div class="phase-selector-group">
+            <button type="button" class="phase-btn mono" data-conexao="mono">
+              <span>Monofásico</span>
+              <small>30 kWh</small>
+            </button>
+            <button type="button" class="phase-btn bi" data-conexao="bi">
+              <span>Bifásico</span>
+              <small>50 kWh</small>
+            </button>
+            <button type="button" class="phase-btn tri active" data-conexao="tri">
+              <span>Trifásico</span>
+              <small>100 kWh</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-desconto-bt">Percentual de Desconto (%)</label>
+          <input type="number" id="input-desconto-bt" class="form-control" value="25" placeholder="Ex: 25">
         </div>
       </div>
 
+      <!-- PAINEL DE INPUTS DA MÉDIA TENSÃO (MT) -->
+      <div id="container-grupo-mt" style="display: none;">
+        <div class="form-group">
+          <label for="input-consumo-hp">Consumo Ponta - HP (kWh)</label>
+          <input type="number" id="input-consumo-hp" class="form-control" value="1000" placeholder="Ex: 1000">
+        </div>
+        
+        <div class="form-group">
+          <label for="input-tarifa-hp">Tarifa Ponta - HP (R$/kWh)</label>
+          <input type="text" id="input-tarifa-hp" class="form-control" value="2,10" placeholder="Ex: 2,10">
+        </div>
+
+        <div class="form-group">
+          <label for="input-consumo-hfp">Consumo Fora Ponta - HFP (kWh)</label>
+          <input type="number" id="input-consumo-hfp" class="form-control" value="5000" placeholder="Ex: 5000">
+        </div>
+
+        <div class="form-group">
+          <label for="input-tarifa-hfp">Tarifa Fora Ponta - HFP (R$/kWh)</label>
+          <input type="text" id="input-tarifa-hfp" class="form-control" value="0,72" placeholder="Ex: 0,72">
+        </div>
+
+        <div class="form-group">
+          <label for="input-desconto-mt">Percentual de Desconto (%)</label>
+          <input type="number" id="input-desconto-mt" class="form-control" value="15" placeholder="Ex: 15">
+        </div>
+      </div>
+
+      <!-- Fidelidade Contratual -->
       <div class="form-group">
-        <label for="input-desconto-bt">Percentual de Desconto (%)</label>
-        <input type="number" id="input-desconto-bt" class="form-control" value="25" placeholder="Ex: 25">
+        <label for="input-fidelidade">Fidelidade Contratual</label>
+        <select id="input-fidelidade" class="form-control">
+          <option value="sem">Sem fidelidade</option>
+          <option value="12">Fidelidade de 12 meses</option>
+          <option value="24">Fidelidade de 24 meses</option>
+          <option value="36">Fidelidade de 36 meses</option>
+        </select>
       </div>
     </div>
 
-    <!-- PAINEL DE INPUTS DA MÉDIA TENSÃO (MT) -->
-    <div id="container-grupo-mt" style="display: none;">
+    <!-- CONTROLES DO GERADOR DE FLYERS -->
+    <div id="panel-controls-flyer" style="display: none;">
       <div class="form-group">
-        <label for="input-consumo-hp">Consumo Ponta - HP (kWh)</label>
-        <input type="number" id="input-consumo-hp" class="form-control" value="1000" placeholder="Ex: 1000">
-      </div>
-      
-      <div class="form-group">
-        <label for="input-tarifa-hp">Tarifa Ponta - HP (R$/kWh)</label>
-        <input type="text" id="input-tarifa-hp" class="form-control" value="2,10" placeholder="Ex: 2,10">
+        <label for="input-flyer-parceiro">Parceiro (Nome da Loja)</label>
+        <input type="text" id="input-flyer-parceiro" class="form-control" value="Cabocla de Nova Lima" placeholder="Ex: Cabocla de Nova Lima">
       </div>
 
       <div class="form-group">
-        <label for="input-consumo-hfp">Consumo Fora Ponta - HFP (kWh)</label>
-        <input type="number" id="input-consumo-hfp" class="form-control" value="5000" placeholder="Ex: 5000">
+        <label for="input-flyer-ref">Cupom / REF (Código)</label>
+        <input type="text" id="input-flyer-ref" class="form-control" value="CABOCLANEW" placeholder="Ex: CABOCLANEW" style="text-transform: uppercase;">
       </div>
 
       <div class="form-group">
-        <label for="input-tarifa-hfp">Tarifa Fora Ponta - HFP (R$/kWh)</label>
-        <input type="text" id="input-tarifa-hfp" class="form-control" value="0,72" placeholder="Ex: 0,72">
+        <label for="input-flyer-desconto">Percentual de Desconto (%)</label>
+        <input type="number" id="input-flyer-desconto" class="form-control" value="25" placeholder="Ex: 25" min="5" max="30">
       </div>
-
-      <div class="form-group">
-        <label for="input-desconto-mt">Percentual de Desconto (%)</label>
-        <input type="number" id="input-desconto-mt" class="form-control" value="15" placeholder="Ex: 15">
-      </div>
-    </div>
-
-    <!-- Fidelidade Contratual (Último item editável) -->
-    <div class="form-group">
-      <label for="input-fidelidade">Fidelidade Contratual</label>
-      <select id="input-fidelidade" class="form-control">
-        <option value="sem">Sem fidelidade</option>
-        <option value="12">Fidelidade de 12 meses</option>
-        <option value="24">Fidelidade de 24 meses</option>
-        <option value="36">Fidelidade de 36 meses</option>
-      </select>
     </div>
 
     <!-- Painel de Ações Administrativas -->
@@ -1009,7 +1366,7 @@
       <button type="button" class="btn btn-primary" id="btn-print">
         <!-- Ícone Impressora SVG -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Salvar PDF / Imprimir
+        Salvar PDF / Imprimir Proposta
       </button>
       
       <button type="button" class="btn btn-secondary" id="btn-share">
@@ -1030,7 +1387,7 @@
     </div>
   </aside>
 
-  <!-- 2. ÁREA DE VISUALIZAÇÃO A4 -->
+  <!-- 2. ÁREA DE VISUALIZAÇÃO -->
   <main class="workspace">
     <!-- Controle de Zoom do Workspace -->
     <div class="workspace-toolbar">
@@ -1153,6 +1510,96 @@
 
       </article>
 
+      <!-- FOLHA A5 DO FLYER DE PARCERIA (NAMESPACED EM CSS COM .flyer-card) -->
+      <div class="flyer-card" id="flyer-page" style="display: none;">
+        
+        <!-- Cabeçalho -->
+        <header class="header">
+          <div class="logo-container">
+            <svg width="24" height="24" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g transform="translate(150, 150)">
+                <line x1="-80" y1="80" x2="80" y2="-80" stroke="#258887" stroke-width="24" stroke-linecap="round" />
+                <line x1="-72" y1="-72" x2="-36" y2="-36" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
+                <line x1="36" y1="36" x2="72" y2="72" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
+                <line x1="-102" y1="0" x2="-66" y2="0" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
+                <line x1="66" y1="0" x2="102" y2="0" stroke="#D85C03" stroke-width="24" stroke-linecap="round" />
+                <circle cx="0" cy="-94" r="20" fill="#258887" />
+                <circle cx="0" cy="94" r="20" fill="#258887" />
+              </g>
+            </svg>
+            <div class="logo-text">Desconto <span>Sollar</span></div>
+          </div>
+          <div class="brand-tagline">Energia por Assinatura</div>
+        </header>
+
+        <!-- Título de Impacto -->
+        <div class="hero-section">
+          <h1 class="hero-title">Sua conta de luz com <span id="pv-flyer-title-desc-display">até 25% de desconto</span></h1>
+          <p class="hero-subtitle">Reduza o valor da sua fatura mensal da CEMIG de forma limpa, sustentável e digital.</p>
+        </div>
+
+        <!-- Parceria Comercial -->
+        <div class="partner-badge">
+          <span class="partner-label">Desconto Exclusivo para Clientes</span>
+          <div class="partner-name" id="pv-flyer-partner-display">Cabocla de Nova Lima</div>
+        </div>
+
+        <!-- Grid de Benefícios ("Três Zeros") -->
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="feature-num" id="pv-flyer-grid-desc-display" style="color: var(--azul-mid);">25%</span>
+            <div class="feature-title">Desconto</div>
+            <p class="feature-desc">Economia mensal na fatura da CEMIG.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-num">R$ 0,00</span>
+            <div class="feature-title">Investimento</div>
+            <p class="feature-desc">Sem obras ou taxa de adesão no seu imóvel.</p>
+          </div>
+          <div class="feature-card">
+            <span class="feature-num">Zero</span>
+            <div class="feature-title">Burocracia</div>
+            <p class="feature-desc">Adesão gratuita e digital em 2 minutos.</p>
+          </div>
+        </div>
+
+        <!-- Infográfico Passo a Passo -->
+        <div class="how-to-section">
+          <h3 class="section-title">Como Ativar seu Desconto:</h3>
+          <div class="steps-row">
+            <div class="step-item">
+              <div class="step-icon-circle">1</div>
+              <p class="step-text">Escaneie o QR<span>Aponte a câmera</span></p>
+            </div>
+            <div class="step-item">
+              <div class="step-icon-circle">2</div>
+              <p class="step-text">Envie a Fatura<span>Pelo WhatsApp</span></p>
+            </div>
+            <div class="step-item">
+              <div class="step-icon-circle">3</div>
+              <p class="step-text">Economize!<span>Desconto mensal</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rodapé com QR Code e CTA do WhatsApp -->
+        <div class="footer-action">
+          <div class="cta-column">
+            <span class="cta-tag">Adesão Grátis</span>
+            <h4 class="cta-title">Garanta seu desconto hoje!</h4>
+            <p class="cta-desc">Use o QR Code ao lado para iniciar no seu celular.</p>
+          </div>
+          <div class="qr-card">
+            <img class="qr-image" id="pv-flyer-qr-display" src="" alt="QR Code de Adesão">
+            <div class="qr-badge">
+              <!-- WhatsApp Icon inside QR Code -->
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFFFFF"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.262 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.968C16.528 2.008 14.068.996 11.45.996c-5.447 0-9.875 4.37-9.879 9.8.002 2.012.528 3.982 1.523 5.736l-.991 3.616 3.73-.974zm12.013-6.937c-.328-.164-1.94-.959-2.241-1.07-.301-.109-.52-.164-.738.164-.219.329-.848 1.07-1.039 1.29-.19.219-.382.246-.71.082-.328-.164-1.386-.511-2.64-1.63-1.037-.926-1.737-2.072-1.941-2.4-.204-.329-.022-.507.142-.671.147-.148.328-.383.493-.574.164-.19.219-.328.328-.548.109-.219.055-.411-.028-.575-.082-.164-.738-1.78-.973-2.347-.216-.52-.464-.447-.638-.456-.164-.008-.356-.01-.548-.01-.191 0-.507.071-.772.356-.266.287-1.012.986-1.012 2.402 0 1.417 1.029 2.787 1.173 2.979.144.192 2.027 3.132 4.909 4.372.685.295 1.22.471 1.637.603.689.219 1.316.188 1.812.114.553-.083 1.94-.793 2.213-1.56.274-.768.274-1.426.192-1.56-.083-.134-.301-.219-.629-.383z"/></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
@@ -1161,7 +1608,15 @@
      ========================================================================== -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Elementos de Controle do Formulário
+      // Elementos de Navegação da Ferramenta
+      const btnTabProposta = document.getElementById('btn-tab-proposta');
+      const btnTabFlyer = document.getElementById('btn-tab-flyer');
+      const panelControlsProposta = document.getElementById('panel-controls-proposta');
+      const panelControlsFlyer = document.getElementById('panel-controls-flyer');
+      const proposalPage = document.getElementById('proposal-page');
+      const flyerPage = document.getElementById('flyer-page');
+
+      // Elementos de Controle do Formulário - PROPOSTAS
       const inputNome = document.getElementById('input-nome');
       const inputCidade = document.getElementById('input-cidade');
       const inputCelular = document.getElementById('input-celular');
@@ -1189,6 +1644,11 @@
       const inputTarifaHFP = document.getElementById('input-tarifa-hfp');
       const inputDescontoMT = document.getElementById('input-desconto-mt');
       const inputFidelidade = document.getElementById('input-fidelidade');
+
+      // Elementos de Controle - FLYERS
+      const inputFlyerParceiro = document.getElementById('input-flyer-parceiro');
+      const inputFlyerRef = document.getElementById('input-flyer-ref');
+      const inputFlyerDesconto = document.getElementById('input-flyer-desconto');
       
       // Elementos de Ação
       const btnPrint = document.getElementById('btn-print');
@@ -1203,14 +1663,65 @@
       const zoomIndicator = document.getElementById('zoom-indicator');
       const scaleWrapper = document.getElementById('scale-wrapper');
       
-      // Estado de Zoom
-      let currentZoom = 0.85; 
-      
       // Estado Geral da Aplicação
+      let activeTool = 'proposta'; // proposta ou flyer
+      let currentZoom = 0.85; 
       let grupoTarifario = 'bt'; // bt ou mt
       let simMode = 'kwh'; // kwh ou reais (apenas para BT)
       let phaseType = 'tri'; // mono, bi ou tri (apenas para BT)
       
+      // ==========================================
+      // ALTERNAR ENTRE PROPOSTAS E FLYERS
+      // ==========================================
+      const setTool = (tool) => {
+        activeTool = tool;
+        if (tool === 'proposta') {
+          btnTabProposta.classList.add('active');
+          btnTabFlyer.classList.remove('active');
+          document.body.classList.add('tool-proposta');
+          document.body.classList.remove('tool-flyer');
+          
+          panelControlsProposta.style.display = 'block';
+          panelControlsFlyer.style.display = 'none';
+          
+          proposalPage.style.display = 'flex';
+          flyerPage.style.display = 'none';
+          
+          btnWhatsapp.style.display = 'flex';
+          
+          btnPrint.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Salvar PDF / Imprimir Proposta
+          `;
+          
+          calculateProposal();
+        } else {
+          btnTabFlyer.classList.add('active');
+          btnTabProposta.classList.remove('active');
+          document.body.classList.add('tool-flyer');
+          document.body.classList.remove('tool-proposta');
+          
+          panelControlsProposta.style.display = 'none';
+          panelControlsFlyer.style.display = 'block';
+          
+          proposalPage.style.display = 'none';
+          flyerPage.style.display = 'flex';
+          
+          btnWhatsapp.style.display = 'none';
+          
+          btnPrint.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Salvar PDF / Imprimir Flyer A5
+          `;
+          
+          updateFlyer();
+        }
+        fitZoomToScreen();
+      };
+
+      btnTabProposta.addEventListener('click', () => setTool('proposta'));
+      btnTabFlyer.addEventListener('click', () => setTool('flyer'));
+
       // ==========================================
       // CONTROLE DE FORMATOS E MÁSCARAS
       // ==========================================
@@ -1271,7 +1782,7 @@
           let parsed = parseFloat(valStr);
           if (isNaN(parsed) || parsed < 0) parsed = defaultValue;
           e.target.value = parsed.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
-          calculateProposal();
+          if (activeTool === 'proposta') calculateProposal();
         });
       };
       setupTariffBlur(inputTarifa, 1.14);
@@ -1348,7 +1859,7 @@
       });
 
       // ==========================================
-      // MOTOR DE CÁLCULO PRINCIPAL
+      // MOTOR DE CÁLCULO PRINCIPAL (PROPOSTAS)
       // ==========================================
       const calculateProposal = () => {
         const nome = inputNome.value.trim() || 'Cliente';
@@ -1495,15 +2006,55 @@
         document.getElementById('pv-fidelidade-texto').textContent = fidelidadeTexto;
       };
 
-      // Vincular eventos de mudança nos inputs
-      const allInputs = [
+      // ==========================================
+      // MOTOR DE CÁLCULO E QR CODE (FLYERS)
+      // ==========================================
+      const updateFlyer = () => {
+        const nome = inputFlyerParceiro.value.trim() || "Parceiro Oficial";
+        const ref = inputFlyerRef.value.trim().toUpperCase() || "SOL";
+        const desc = inputFlyerDesconto.value.trim() || "25";
+
+        // Atualizar o título do documento para salvar o PDF
+        document.title = `Flyer Parceria Desconto Sollar - ${nome}`;
+
+        // Atualizar o nome do parceiro no card
+        document.getElementById('pv-flyer-partner-display').textContent = nome;
+        
+        // Atualizar o título do desconto no flyer
+        document.getElementById('pv-flyer-title-desc-display').textContent = `até ${desc}% de desconto`;
+
+        // Atualizar o primeiro card do grid com a taxa de desconto selecionada
+        const gridDesc = document.getElementById('pv-flyer-grid-desc-display');
+        if (gridDesc) gridDesc.textContent = `${desc}%`;
+
+        // Gerar a URL completa com o cupom/ref, o nome e o desconto do parceiro para o QR Code
+        const linkFinal = `https://descontosollar.com.br/adesao.html?ref=${encodeURIComponent(ref)}&nome=${encodeURIComponent(nome)}&desc=${encodeURIComponent(desc)}`;
+
+        // Atualizar o QR Code (usando serviço público do QRServer)
+        document.getElementById('pv-flyer-qr-display').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(linkFinal)}&margin=1`;
+      };
+
+      // Vincular eventos de mudança nos inputs de Proposta
+      const allInputsProposta = [
         inputNome, inputCidade, inputCelular, inputData, inputValor, inputTarifa, inputDescontoBT,
         inputConsumoHP, inputTarifaHP, inputConsumoHFP, inputTarifaHFP, inputDescontoMT, inputFidelidade
       ];
-      allInputs.forEach(el => {
-        el.addEventListener('input', calculateProposal);
+      allInputsProposta.forEach(el => {
+        el.addEventListener('input', () => {
+          if (activeTool === 'proposta') calculateProposal();
+        });
       });
-      inputFidelidade.addEventListener('change', calculateProposal);
+      inputFidelidade.addEventListener('change', () => {
+        if (activeTool === 'proposta') calculateProposal();
+      });
+
+      // Vincular eventos de mudança nos inputs de Flyer
+      const allInputsFlyer = [inputFlyerParceiro, inputFlyerRef, inputFlyerDesconto];
+      allInputsFlyer.forEach(el => {
+        el.addEventListener('input', () => {
+          if (activeTool === 'flyer') updateFlyer();
+        });
+      });
 
       // ==========================================
       // CONTROLES DE ZOOM DO WORKSPACE
@@ -1526,8 +2077,8 @@
           return;
         }
         const workspaceWidth = document.querySelector('.workspace').clientWidth;
-        const paperWidth = 794; 
-        const targetZoom = (workspaceWidth - 60) / paperWidth;
+        const targetWidth = activeTool === 'proposta' ? 794 : 560; // A4 (794px) vs A5 (560px)
+        const targetZoom = (workspaceWidth - 60) / targetWidth;
         updateZoom(Math.min(targetZoom, 1.0)); 
       };
 
@@ -1539,54 +2090,65 @@
       // ==========================================
       const loadParamsFromURL = () => {
         const urlParams = new URLSearchParams(window.location.search);
+        const tool = urlParams.get('tool') || 'proposta';
         
-        if (urlParams.has('nome')) inputNome.value = urlParams.get('nome');
-        if (urlParams.has('cidade')) inputCidade.value = urlParams.get('cidade');
-        if (urlParams.has('tel')) inputCelular.value = maskPhoneBR(urlParams.get('tel'));
-        if (urlParams.has('data')) inputData.value = urlParams.get('data');
-        
-        if (urlParams.has('desconto')) {
-          const desc = urlParams.get('desconto');
-          inputDescontoBT.value = desc;
-          inputDescontoMT.value = desc;
-        }
-
-        if (urlParams.has('fidelidade')) {
-          inputFidelidade.value = urlParams.get('fidelidade');
-        }
-        
-        // MT Params
-        if (urlParams.has('chp')) inputConsumoHP.value = urlParams.get('chp');
-        if (urlParams.has('thp')) inputTarifaHP.value = parseFloat(urlParams.get('thp')).toLocaleString('pt-BR');
-        if (urlParams.has('chfp')) inputConsumoHFP.value = urlParams.get('chfp');
-        if (urlParams.has('thfp')) inputTarifaHFP.value = parseFloat(urlParams.get('thfp')).toLocaleString('pt-BR');
-
-        // BT Params
-        if (urlParams.has('tarifa')) inputTarifa.value = parseFloat(urlParams.get('tarifa')).toLocaleString('pt-BR');
-        if (urlParams.has('fase')) {
-          phaseType = urlParams.get('fase');
-          phaseBtns.forEach(btn => {
-            if (btn.dataset.conexao === phaseType) btn.classList.add('active');
-            else btn.classList.remove('active');
-          });
-        }
-
-        // Grupo e modo
-        if (urlParams.has('grupo')) {
-          const gp = urlParams.get('grupo');
-          grupoTarifario = gp;
-          setGrupoTarifario(gp);
+        if (tool === 'flyer') {
+          if (urlParams.has('nome')) inputFlyerParceiro.value = urlParams.get('nome');
+          if (urlParams.has('ref')) inputFlyerRef.value = urlParams.get('ref').toUpperCase();
+          if (urlParams.has('desc')) inputFlyerDesconto.value = urlParams.get('desc');
+          setTool('flyer');
         } else {
-          setGrupoTarifario('bt');
-        }
+          // Carrega parâmetros da proposta
+          if (urlParams.has('nome')) inputNome.value = urlParams.get('nome');
+          if (urlParams.has('cidade')) inputCidade.value = urlParams.get('cidade');
+          if (urlParams.has('tel')) inputCelular.value = maskPhoneBR(urlParams.get('tel'));
+          if (urlParams.has('data')) inputData.value = urlParams.get('data');
+          
+          if (urlParams.has('desconto')) {
+            const desc = urlParams.get('desconto');
+            inputDescontoBT.value = desc;
+            inputDescontoMT.value = desc;
+          }
 
-        if (grupoTarifario === 'bt' && urlParams.has('modo') && urlParams.has('val')) {
-          const mode = urlParams.get('modo');
-          const val = urlParams.get('val');
-          inputValor.value = val;
-          setSimMode(mode);
-        } else {
-          calculateProposal();
+          if (urlParams.has('fidelidade')) {
+            inputFidelidade.value = urlParams.get('fidelidade');
+          }
+          
+          // MT Params
+          if (urlParams.has('chp')) inputConsumoHP.value = urlParams.get('chp');
+          if (urlParams.has('thp')) inputTarifaHP.value = parseFloat(urlParams.get('thp')).toLocaleString('pt-BR');
+          if (urlParams.has('chfp')) inputConsumoHFP.value = urlParams.get('chfp');
+          if (urlParams.has('thfp')) inputTarifaHFP.value = parseFloat(urlParams.get('thfp')).toLocaleString('pt-BR');
+
+          // BT Params
+          if (urlParams.has('tarifa')) inputTarifa.value = parseFloat(urlParams.get('tarifa')).toLocaleString('pt-BR');
+          if (urlParams.has('fase')) {
+            phaseType = urlParams.get('fase');
+            phaseBtns.forEach(btn => {
+              if (btn.dataset.conexao === phaseType) btn.classList.add('active');
+              else btn.classList.remove('active');
+            });
+          }
+
+          // Grupo e modo
+          if (urlParams.has('grupo')) {
+            const gp = urlParams.get('grupo');
+            grupoTarifario = gp;
+            setGrupoTarifario(gp);
+          } else {
+            setGrupoTarifario('bt');
+          }
+
+          if (grupoTarifario === 'bt' && urlParams.has('modo') && urlParams.has('val')) {
+            const mode = urlParams.get('modo');
+            const val = urlParams.get('val');
+            inputValor.value = val;
+            setSimMode(mode);
+          } else {
+            calculateProposal();
+          }
+          
+          setTool('proposta');
         }
       };
 
@@ -1594,35 +2156,51 @@
 
       // Copiar link preenchido
       btnShare.addEventListener('click', () => {
-        const nome = encodeURIComponent(inputNome.value);
-        const cidade = encodeURIComponent(inputCidade.value);
-        const tel = encodeURIComponent(inputCelular.value.replace(/\D/g, ''));
-        const data = encodeURIComponent(inputData.value);
-        const desconto = grupoTarifario === 'bt' ? inputDescontoBT.value : inputDescontoMT.value;
-        const fidelidade = inputFidelidade.value;
-        
-        let shareURL = `${window.location.origin}${window.location.pathname}?grupo=${grupoTarifario}&nome=${nome}&cidade=${cidade}&tel=${tel}&data=${data}&desconto=${desconto}&fidelidade=${fidelidade}`;
-        
-        if (grupoTarifario === 'bt') {
-          const tarifa = parseFloat(inputTarifa.value.replace(',', '.')) || 1.14;
-          const fase = phaseType;
-          const val = inputValor.value;
-          shareURL += `&modo=${simMode}&val=${val}&tarifa=${tarifa}&fase=${fase}`;
+        if (activeTool === 'proposta') {
+          const nome = encodeURIComponent(inputNome.value);
+          const city = encodeURIComponent(inputCidade.value);
+          const tel = encodeURIComponent(inputCelular.value.replace(/\D/g, ''));
+          const data = encodeURIComponent(inputData.value);
+          const desconto = grupoTarifario === 'bt' ? inputDescontoBT.value : inputDescontoMT.value;
+          const fidelidade = inputFidelidade.value;
+          
+          let shareURL = `${window.location.origin}${window.location.pathname}?tool=proposta&grupo=${grupoTarifario}&nome=${nome}&cidade=${city}&tel=${tel}&data=${data}&desconto=${desconto}&fidelidade=${fidelidade}`;
+          
+          if (grupoTarifario === 'bt') {
+            const tarifa = parseFloat(inputTarifa.value.replace(',', '.')) || 1.14;
+            const fase = phaseType;
+            const val = inputValor.value;
+            shareURL += `&modo=${simMode}&val=${val}&tarifa=${tarifa}&fase=${fase}`;
+          } else {
+            const chp = inputConsumoHP.value;
+            const thp = parseFloat(inputTarifaHP.value.replace(',', '.')) || 2.10;
+            const chfp = inputConsumoHFP.value;
+            const thfp = parseFloat(inputTarifaHFP.value.replace(',', '.')) || 0.72;
+            shareURL += `&chp=${chp}&thp=${thp}&chfp=${chfp}&thfp=${thfp}`;
+          }
+          
+          navigator.clipboard.writeText(shareURL)
+            .then(() => {
+              alert('Link da proposta preenchida copiado com sucesso!');
+            })
+            .catch(err => {
+              alert('Não foi possível copiar o link.');
+            });
         } else {
-          const chp = inputConsumoHP.value;
-          const thp = parseFloat(inputTarifaHP.value.replace(',', '.')) || 2.10;
-          const chfp = inputConsumoHFP.value;
-          const thfp = parseFloat(inputTarifaHFP.value.replace(',', '.')) || 0.72;
-          shareURL += `&chp=${chp}&thp=${thp}&chfp=${chfp}&thfp=${thfp}`;
+          // Copiar link do Flyer
+          const nome = encodeURIComponent(inputFlyerParceiro.value);
+          const ref = encodeURIComponent(inputFlyerRef.value.trim().toUpperCase());
+          const desc = inputFlyerDesconto.value;
+          const shareURL = `${window.location.origin}${window.location.pathname}?tool=flyer&nome=${nome}&ref=${ref}&desc=${desc}`;
+          
+          navigator.clipboard.writeText(shareURL)
+            .then(() => {
+              alert('Link do Flyer preenchido copiado com sucesso!');
+            })
+            .catch(err => {
+              alert('Não foi possível copiar o link.');
+            });
         }
-        
-        navigator.clipboard.writeText(shareURL)
-          .then(() => {
-            alert('Link da proposta preenchida copiado com sucesso para a área de transferência!');
-          })
-          .catch(err => {
-            alert('Não foi possível copiar o link.');
-          });
       });
 
       // ==========================================
@@ -1644,7 +2222,6 @@
           const valorInput = parseFloat(inputValor.value) || 0;
           const tarifa = parseFloat(inputTarifa.value.replace(/\./g, '').replace(',', '.')) || 1.14;
           const descontoPercentual = parseFloat(inputDescontoBT.value) || 25;
-          const deduzirTaxa = true;
           
           let consumo = simMode === 'kwh' ? valorInput : (valorInput / tarifa);
           let fatura = simMode === 'reais' ? valorInput : (valorInput * tarifa);
@@ -1695,31 +2272,39 @@
       // Limpar campos
       btnClear.addEventListener('click', () => {
         if (confirm('Tem certeza que deseja redefinir todos os campos para os valores padrão?')) {
-          inputNome.value = 'Cliente';
-          inputCidade.value = 'Minas Gerais';
-          inputCelular.value = '';
-          inputData.value = formatTodayDateISO();
-          
-          // BT Reset
-          inputValor.value = '192';
-          inputTarifa.value = '1,14';
-          inputDescontoBT.value = '25';
-          phaseBtns.forEach(b => {
-            if (b.dataset.conexao === 'tri') b.classList.add('active');
-            else b.classList.remove('active');
-          });
-          phaseType = 'tri';
-          simMode = 'kwh';
+          if (activeTool === 'proposta') {
+            inputNome.value = 'Cliente';
+            inputCidade.value = 'Minas Gerais';
+            inputCelular.value = '';
+            inputData.value = formatTodayDateISO();
+            
+            // BT Reset
+            inputValor.value = '192';
+            inputTarifa.value = '1,14';
+            inputDescontoBT.value = '25';
+            phaseBtns.forEach(b => {
+              if (b.dataset.conexao === 'tri') b.classList.add('active');
+              else b.classList.remove('active');
+            });
+            phaseType = 'tri';
+            simMode = 'kwh';
 
-          // MT Reset
-          inputConsumoHP.value = '1000';
-          inputTarifaHP.value = '2,10';
-          inputConsumoHFP.value = '5000';
-          inputTarifaHFP.value = '0,72';
-          inputDescontoMT.value = '15';
+            // MT Reset
+            inputConsumoHP.value = '1000';
+            inputTarifaHP.value = '2,10';
+            inputConsumoHFP.value = '5000';
+            inputTarifaHFP.value = '0,72';
+            inputDescontoMT.value = '15';
 
-          inputFidelidade.value = 'sem';
-          setGrupoTarifario('bt');
+            inputFidelidade.value = 'sem';
+            setGrupoTarifario('bt');
+          } else {
+            // Flyer Reset
+            inputFlyerParceiro.value = 'Cabocla de Nova Lima';
+            inputFlyerRef.value = 'CABOCLANEW';
+            inputFlyerDesconto.value = '25';
+            updateFlyer();
+          }
         }
       });
 
